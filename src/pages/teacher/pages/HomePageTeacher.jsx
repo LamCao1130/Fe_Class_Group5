@@ -6,15 +6,14 @@ import { useState } from "react";
 const { Content, Sider } = Layout;
 
 export default function HomePageTeacher() {
-  const [collapsed, setCollapsed] = useState(false);
   return (
     <>
       <Layout style={{ minHeight: "100vh" }}>
-        <MenuTeacher collapsed={collapsed} />
+        <MenuTeacher />
 
         <Layout>
           <Content style={{ padding: 24, background: "#fff" }}>
-            <Outlet /> {/* 👈 phần render nội dung con ở đây */}
+            <Outlet />
           </Content>
         </Layout>
       </Layout>
