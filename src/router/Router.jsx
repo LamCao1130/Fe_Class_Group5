@@ -4,7 +4,7 @@ import HomePageStudent from "../pages/student/pages/HomePageStudent";
 import App from "../App";
 import HomePageTeacher from "../pages/teacher/pages/HomePageTeacher";
 import ManageClass from "../pages/teacher/pages/ManageClass";
-import HeaderStudent from "../components/HeaderStudent";
+import HeaderStudent from "../pages/student/components/HeaderStudent";
 
 let router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -19,7 +19,7 @@ let router = createBrowserRouter([
     children: [
       {
         path: "/student/homepage",
-        element: <HomePage />,
+        element: <HomePageStudent />,
       },
     ],
   },
