@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Container, Form, InputGroup } from "react-bootstrap";
 // Giả sử đường dẫn import này là chính xác
-import BackgroundImage from "../../image/bg_image_studenthomepage.jpg";
+import BackgroundImage from "../../../image/bg_image_studenthomepage.jpg";
 
 export default function HomePage() {
   return (
@@ -21,7 +21,7 @@ export default function HomePage() {
         <h1 style={{ fontSize: "8vw" }}>Education Courses</h1>
         <InputGroup className="mb-3 w-50 m-auto">
           <InputGroup.Text>Classroom</InputGroup.Text>
-          <Form.Control placeholder="Key word" aria-label="Last name" />
+          <Form.Control placeholder="Code " aria-label="Last name" />
           <Button
             as="input"
             type="submit"
