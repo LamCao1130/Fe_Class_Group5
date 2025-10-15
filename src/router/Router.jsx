@@ -4,6 +4,7 @@ import HomePageStudent from "../pages/student/pages/HomePageStudent";
 import App from "../App";
 import HomePageTeacher from "../pages/teacher/pages/HomePageTeacher";
 import ManageClass from "../pages/teacher/pages/ManageClass";
+import HeaderStudent from "../components/HeaderStudent";
 
 let router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -12,6 +13,15 @@ let router = createBrowserRouter([
     path: "/teacher",
     element: <HomePageTeacher />,
     children: [{ path: "manageClass", element: <ManageClass /> }],
+  },
+  {
+    element: <HeaderStudent />,
+    children: [
+      {
+        path: "/student/homepage",
+        element: <HomePage />,
+      },
+    ],
   },
 ]);
 export default router;
