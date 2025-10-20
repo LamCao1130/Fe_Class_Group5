@@ -1,0 +1,7 @@
+.noCaret::after {
+  content: none !important;
+  display: none !important;
+}
+.dropdown :global(.dropdown-item) {
+  font-size: 0.7rem !important;
+}

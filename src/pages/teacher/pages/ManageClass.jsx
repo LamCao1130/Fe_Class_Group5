@@ -1,10 +1,17 @@
-import React from "react";
+import { Layout } from "antd";
+import ManageClassNaBar from "../components/ManageClassNabar";
+import { Content } from "antd/es/layout/layout";
+import { Outlet } from "react-router";
 
 export default function ManageClass() {
   return (
     <>
-      <div>quản lý lớp học</div>
-      <h1>abc</h1>
+      <Layout style={{ minHeight: "100vh" }}>
+        <ManageClassNaBar></ManageClassNaBar>
+        <Content style={{ background: "#fff" }}>
+          <Outlet />
+        </Content>
+      </Layout>{" "}
     </>
   );
 }

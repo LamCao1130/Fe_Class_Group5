@@ -1,0 +1,7 @@
+.navbar {
+  background-color: white !important;
+  border-bottom: 0.8px solid rgba(0, 0, 0, 0.1) !important ;
+}
+.navbar :global(.nav-link):hover {
+  background-color: #f8f9fa;
+}
