@@ -1,22 +1,29 @@
 import { Outlet } from "react-router";
 import MenuTeacher from "../components/Menu";
-import { Layout, Button, Menu } from "antd";
+import { Layout } from "antd";
+import HeaderPageTeacher from "../components/HeaderPageTeacher";
 import { useState } from "react";
+import JoinClassroomModal from "../components/JoinClassroomModal";
 
-const { Content, Sider } = Layout;
+const { Content } = Layout;
 
 export default function HomePageTeacher() {
+  const [showJoinModal, setShowJoinModal] = useState(false);
   return (
-    <>
-      <Layout style={{ minHeight: "100vh" }}>
-        <MenuTeacher />
+    <Layout style={{ minHeight: "100vh" }}>
+      <MenuTeacher />
 
-        <Layout>
-          <Content style={{ padding: 24, background: "#fff" }}>
-            <Outlet />
-          </Content>
-        </Layout>
+      <Layout>
+        <HeaderPageTeacher setShowJoinModal={setShowJoinModal} />
+
+        <Content style={{ background: "#fff" }}>
+          <Outlet />
+        </Content>
+        <JoinClassroomModal
+          show={showJoinModal}
+          handleClose={() => setShowJoinModal(false)}
+        />
       </Layout>
-    </>
+    </Layout>
   );
 }

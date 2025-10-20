@@ -1,0 +1,8 @@
+.navbarBrand:hover span {
+  text-decoration: underline;
+  color: blue;
+}
+.noCaret::after {
+  content: none !important;
+  display: none !important;
+}

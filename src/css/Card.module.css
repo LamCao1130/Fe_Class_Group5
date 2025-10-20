@@ -1,0 +1,30 @@
+.card :global(.card-header) :global(*) {
+  text-overflow: ellipsis !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  color: red !important;
+}
+.card :global(.card-header) :global(*):hover,
+.card :global(.card-text):hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+.card :global(.card-header) {
+  width: 300px;
+  background-color: aqua;
+
+  height: 100px;
+}
+.card :global(.card-header) :global(.card-subtitle) {
+  width: 200px;
+}
+.card :global(.card-body) {
+  height: 150px;
+}
+.card {
+  width: 300px;
+}
+.card :global(.dropdown-toggle)::after {
+  content: none !important;
+  display: none !important;
+}
