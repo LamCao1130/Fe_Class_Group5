@@ -41,7 +41,7 @@ function App() {
         navigate("/student/homepage");
       }
     } catch (e) {}
-    setShowLogin(false);
+    // setShowLogin(false);
   };
 
   const validation = () => {
