@@ -9,6 +9,7 @@ import HomePage from "../pages/teacher/pages/HomePage";
 import ClassDetail from "../pages/teacher/pages/ClassDetail";
 import ListStudent from "../pages/teacher/pages/ListStudent";
 import RouterPrivate from "./RouterPrivate";
+import TeacherProtectedRouter from "./TeacherProtectedRouter";
 
 let router = createBrowserRouter([
   { path: "/fail403", element: <Fail403 /> },
