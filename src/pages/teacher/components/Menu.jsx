@@ -8,53 +8,74 @@ import {
   PieChartOutlined,
 } from "@ant-design/icons";
 import { Button, Menu, Layout } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import teacherService from "../services/TeacherSerivceApi";
+import { jwtDecode } from "jwt-decode";
 
 const { Sider } = Layout;
 
-const items = [
-  {
-    key: "1",
-    icon: <PieChartOutlined />,
-    label: <Link to="/teacher">Dashboard</Link>,
-  },
-  {
-    key: "2",
-    icon: <DesktopOutlined />,
-    label: <Link to="/teacher/manageClass">Quản lý lớp học</Link>,
-  },
-  {
-    key: "sub1",
-    label: "Quản lý học sinh ",
-    children: [
-      { key: "5", label: "Option 5" },
-      { key: "6", label: "Option 6" },
-    ],
-  },
-  {
-    key: "sub2",
-    label: "Navigation Two",
-    icon: <AppstoreOutlined />,
-    children: [
-      { key: "9", label: "Option 9" },
-      { key: "10", label: "Option 10" },
-      {
-        key: "sub3",
-        label: "Submenu",
-        children: [
-          { key: "11", label: "Option 11" },
-          { key: "12", label: "Option 12" },
-        ],
-      },
-    ],
-  },
-];
 const MenuTeacher = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [listClass, setListClass] = useState([]);
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };
+  let token = localStorage.getItem("accessToken");
+  const decoded = jwtDecode(token);
+  useEffect(() => {
+    console.log(decoded.accountId);
+    let callList = async () => {
+      let res = await teacherService.getListClassRoomByTeacherId(
+        decoded.accountId
+      );
+      console.log(res);
+      let listNew = res?.data.map((p) => {
+        return { key: p.id, label: p.name };
+      });
+      setListClass(listNew);
+    };
+    callList();
+  }, []);
+  const items = [
+    {
+      key: "1",
+      icon: <PieChartOutlined />,
+      label: <Link to="/teacher">Dashboard</Link>,
+    },
+    {
+      key: "2",
+      icon: <DesktopOutlined />,
+      label: <Link to="/teacher/manageClass">Quản lý lớp học</Link>,
+      children: listClass,
+    },
+    {
+      key: "sub1",
+      label: "Quản lý học sinh ",
+      children: [
+        { key: "5", label: "Option 5" },
+        { key: "6", label: "Option 6" },
+      ],
+    },
+    {
+      key: "sub2",
+      label: "Navigation Two",
+      icon: <AppstoreOutlined />,
+      children: [
+        { key: "9", label: "Option 9" },
+        { key: "10", label: "Option 10" },
+        {
+          key: "sub3",
+          label: "Submenu",
+          children: [
+            { key: "11", label: "Option 11" },
+            { key: "12", label: "Option 12" },
+          ],
+        },
+      ],
+    },
+  ];
+  console.log(listClass);
   return (
     <Sider
       collapsible
