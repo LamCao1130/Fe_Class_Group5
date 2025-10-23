@@ -9,10 +9,19 @@ import "./App.css";
 
 function App() {
   const [showRegister, setShowRegister] = useState(false);
+  const [dataBase64, setDataBase64] = useState(null);
+
+  const [codeSend, setCodeSend] = useState({});
 
   const handleCloseRegister = () => setShowRegister(false);
   const handleShowRegister = () => setShowRegister(true);
   const [loginText, setLoginText] = useState({});
+
+  const [show2FA, setShow2FA] = useState(false);
+
+  const handleClose2FA = () => setShow2FA(false);
+  const handleShow2FA = () => setShow2FA(true);
+
   const [registerText, setRegisterText] = useState({
     email: "",
     password: "",
@@ -29,18 +38,22 @@ function App() {
     try {
       let res = await axios.post("http://localhost:8080/api/login", loginText);
       console.log(res);
-      localStorage.setItem("accessToken", res.data.accessToken);
-      localStorage.setItem("refreshToken", res.data.refreshToken);
-      let token = localStorage.getItem("accessToken");
-      const decoded = jwtDecode(token);
-
-      console.log(decoded);
-      if (decoded.role === "TEACHER") {
-        navigate("/teacher");
-      } else if (decoded.role === "STUDENT") {
-        navigate("/student/homepage");
+      if (res.status === 200) {
+        let dataFA = res.data;
+        let emailSend2 = loginText.email;
+        setCodeSend({ ...codeSend, email: emailSend2 });
+        setDataBase64(dataFA);
+        setLoginText({});
+        handleShow2FA();
+      } else if (res.status === 206) {
+        let emailSend2 = loginText.email;
+        setCodeSend({ ...codeSend, email: emailSend2 });
+        setLoginText({});
+        handleShow2FA();
       }
-    } catch (e) {}
+    } catch (e) {
+      toast.error("Sai tài khoản hoặc mật khẩu");
+    }
     // setShowLogin(false);
   };
 
@@ -258,6 +271,65 @@ function App() {
           </Button>
           <Button variant="primary" onClick={() => registerAccount()}>
             Đăng Ký
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={show2FA} onHide={handleClose2FA}>
+        <Modal.Header closeButton>
+          <Modal.Title>2 FA security</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ textAlign: "center" }}>
+          <h3>Quét mã QR bằng Google Authenticator</h3>
+          <img
+            src={`data:image/png;base64,${dataBase64?.qrCodeBase64}`}
+            alt="QR Code 2FA"
+            style={{ width: 250, height: 250 }}
+          />
+          <code>{dataBase64?.secret}</code>
+          <input
+            type="text"
+            onChange={(e) => {
+              setCodeSend({ ...codeSend, secretCode: e.target.value });
+            }}
+            placeholder="Nhập mã gồm 6 ký tự"
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose2FA}>
+            Close
+          </Button>
+          <Button
+            variant="primary"
+            onClick={async () => {
+              let se2 = { ...codeSend };
+              if (dataBase64?.secret != null) {
+                se2.base32Code = dataBase64.secret;
+              }
+              try {
+                let res2 = await axios.post(
+                  "http://localhost:8080/api/v1/public/2fa-verify",
+                  se2
+                );
+                if (res2.status === 200) {
+                  localStorage.setItem("accessToken", res2.data.accessToken);
+                  localStorage.setItem("refreshToken", res2.data.refreshToken);
+                  let token = localStorage.getItem("accessToken");
+                  const decoded = jwtDecode(token);
+
+                  console.log(decoded);
+                  if (decoded.role === "TEACHER") {
+                    navigate("/teacher");
+                  } else if (decoded.role === "STUDENT") {
+                    navigate("/student/homepage");
+                  }
+                }
+              } catch (e) {
+                toast.error("sai mã");
+              }
+            }}
+          >
+            Save Changes
           </Button>
         </Modal.Footer>
       </Modal>
