@@ -19,7 +19,10 @@ function App() {
 
   const [show2FA, setShow2FA] = useState(false);
 
-  const handleClose2FA = () => setShow2FA(false);
+  const handleClose2FA = () => {
+    setLoginText({ ...loginText, email: "", password: "" });
+    setShow2FA(false);
+  };
   const handleShow2FA = () => setShow2FA(true);
 
   const [registerText, setRegisterText] = useState({
@@ -150,6 +153,7 @@ function App() {
           <div className="login">
             <input
               type="text"
+              value={loginText?.email}
               onChange={(e) => {
                 setLoginText({ ...loginText, email: e.target.value });
               }}
@@ -157,6 +161,7 @@ function App() {
             />
             <input
               type="password"
+              value={loginText?.password}
               onChange={(e) => {
                 setLoginText({ ...loginText, password: e.target.value });
               }}
@@ -277,27 +282,33 @@ function App() {
 
       <Modal show={show2FA} onHide={handleClose2FA}>
         <Modal.Header closeButton>
-          <Modal.Title>2 FA security</Modal.Title>
+          <Modal.Title>Bảo mật lớp 2</Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ textAlign: "center" }}>
           <h3>Quét mã QR bằng Google Authenticator</h3>
           <img
             src={`data:image/png;base64,${dataBase64?.qrCodeBase64}`}
-            alt="QR Code 2FA"
+            alt="Vui lòng nhập mã đã lưu bằng google authenticator"
             style={{ width: 250, height: 250 }}
           />
           <code>{dataBase64?.secret}</code>
+          <br />
           <input
             type="text"
             onChange={(e) => {
               setCodeSend({ ...codeSend, secretCode: e.target.value });
+            }}
+            style={{
+              padding: "10px",
+              border: "1px solid grey",
+              borderRadius: "15px",
             }}
             placeholder="Nhập mã gồm 6 ký tự"
           />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose2FA}>
-            Close
+            Hủy
           </Button>
           <Button
             variant="primary"
@@ -329,7 +340,7 @@ function App() {
               }
             }}
           >
-            Save Changes
+            Nhập
           </Button>
         </Modal.Footer>
       </Modal>

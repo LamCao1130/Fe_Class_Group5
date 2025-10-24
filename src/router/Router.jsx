@@ -15,6 +15,8 @@ import Dashboard from "../pages/admin/pages/Dashboard";
 import Teachers from "../pages/admin/pages/Teachers";
 import TeacherDetail from "../pages/admin/pages/TeacherDetail";
 import Users from "../pages/admin/pages/Users";
+import StudentProtectRouter from "./StudentProtectRouter";
+import AdminProtectedRouter from "./AdminProtectedRouter";
 let router = createBrowserRouter([
   {
     path: "/fail403",
@@ -44,7 +46,7 @@ let router = createBrowserRouter([
       },
 
       {
-        path: "manageClass",
+        path: "manageClass/:id",
         element: (
           <TeacherProtectedRouter>
             <ManageClass />
@@ -78,9 +80,9 @@ let router = createBrowserRouter([
   {
     path: "/admin",
     element: (
-      //  <AdminProtectedRouter>
-      <AdminLayout />
-      //</AdminProtectedRouter>
+      <AdminProtectedRouter>
+        <AdminLayout />
+      </AdminProtectedRouter>
     ),
     children: [
       { index: true, element: <Navigate to="dashboard" replace /> },
