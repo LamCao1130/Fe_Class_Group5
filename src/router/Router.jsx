@@ -15,11 +15,13 @@ import Dashboard from "../pages/admin/pages/Dashboard";
 import Teachers from "../pages/admin/pages/Teachers";
 import TeacherDetail from "../pages/admin/pages/TeacherDetail";
 import Users from "../pages/admin/pages/Users";
+import StudentProtectRouter from "./StudentProtectRouter";
+import AdminProtectedRouter from "./AdminProtectedRouter";
 let router = createBrowserRouter([
-  { 
-    path: "/fail403", 
+  {
+    path: "/fail403",
     element: <Fail403 />,
-    errorElement: <Fail403 /> 
+    errorElement: <Fail403 />,
   },
   {
     path: "/",
@@ -28,7 +30,7 @@ let router = createBrowserRouter([
         <App />
       </RouterPrivate>
     ),
-    errorElement: <Fail403 />
+    errorElement: <Fail403 />,
   },
   {
     path: "/teacher",
@@ -44,7 +46,7 @@ let router = createBrowserRouter([
       },
 
       {
-        path: "manageClass",
+        path: "manageClass/:id",
         element: (
           <TeacherProtectedRouter>
             <ManageClass />
@@ -62,7 +64,11 @@ let router = createBrowserRouter([
   },
   {
     path: "/student",
-    element: <HeaderStudent />,
+    element: (
+      <StudentProtectRouter>
+        <HeaderStudent />
+      </StudentProtectRouter>
+    ),
     errorElement: <Fail403 />,
     children: [
       {
@@ -72,19 +78,19 @@ let router = createBrowserRouter([
     ],
   },
   {
-  path: "/admin",
-  element: (
-  //  <AdminProtectedRouter>
-      <AdminLayout />
-    //</AdminProtectedRouter>
-  ),
-  children: [
-    { index: true, element: <Navigate to="dashboard" replace /> },
-    { path: "dashboard", element: <Dashboard /> },
-    { path: "teachers", element: <Teachers /> },
-    { path: "teachers/:id", element: <TeacherDetail /> },
-    { path: "users", element: <Users /> },
-  ],
-}
+    path: "/admin",
+    element: (
+      <AdminProtectedRouter>
+        <AdminLayout />
+      </AdminProtectedRouter>
+    ),
+    children: [
+      { index: true, element: <Navigate to="dashboard" replace /> },
+      { path: "dashboard", element: <Dashboard /> },
+      { path: "teachers", element: <Teachers /> },
+      { path: "teachers/:id", element: <TeacherDetail /> },
+      { path: "users", element: <Users /> },
+    ],
+  },
 ]);
 export default router;
