@@ -17,6 +17,7 @@ import TeacherDetail from "../pages/admin/pages/TeacherDetail";
 import Users from "../pages/admin/pages/Users";
 import StudentProtectRouter from "./StudentProtectRouter";
 import AdminProtectedRouter from "./AdminProtectedRouter";
+import AddVocab from "../pages/teacher/pages/AddVocab";
 let router = createBrowserRouter([
   {
     path: "/fail403",
@@ -44,7 +45,10 @@ let router = createBrowserRouter([
         path: "", // ROUTE CON: Khi URL là /teacher
         element: <HomePage />,
       },
-
+      {
+        path: "addvocab",
+        element: <AddVocab />,
+      },
       {
         path: "manageClass/:id",
         element: (
