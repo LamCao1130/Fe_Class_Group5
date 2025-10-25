@@ -2,7 +2,7 @@ import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
 const ReusableTooltip = ({
   tooltipText,
-  placement,
+  placement = "bottom",
   children,
   ...restProps
 }) => {
