@@ -9,7 +9,7 @@ let teacherService = {
   },
   getClassroomDetailById: async (id) => {
     let res = await axiosApi.get(
-      `http://localhost:8080/api/v1/class-rooms/get-by-classroom/${id}`
+      `http://localhost:8080/api/v1/class-rooms/get/${id}`
     );
     return res.data;
   },
