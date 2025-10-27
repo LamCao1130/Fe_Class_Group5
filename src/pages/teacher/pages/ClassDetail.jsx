@@ -1,12 +1,48 @@
-import React from "react";
-import { Card, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
+import React, { useEffect } from "react";
+import {
+  Button,
+  Card,
+  Col,
+  Container,
+  Form,
+  InputGroup,
+  Row,
+} from "react-bootstrap";
 import style from "../../../css/ClassDetail.module.css";
 import { useState } from "react";
+import { useParams } from "react-router";
+import teacherService from "../services/TeacherSerivceApi";
 
 const ClassDetail = () => {
   const [zoom, setZoom] = useState(false);
-  console.log(zoom);
-
+  const [data, setData] = useState({});
+  const [dataLessons, setDataLessons] = useState([]);
+  const { id } = useParams();
+  useEffect(() => {
+    async function fetchDetail() {
+      try {
+        const res = await teacherService.getClassroomDetailById(id);
+        const resLesson = await teacherService.getLessonByClassroomId(id);
+        setData(res);
+        setDataLessons(resLesson);
+      } catch (error) {
+        console.error("Lỗi khi lấy chi tiết lớp học:", error);
+      }
+    }
+    fetchDetail();
+  }, [id]);
+  let renderLessons = dataLessons?.map((item) => {
+    return (
+      <Card>
+        <Card.Header>{item.title}</Card.Header>
+        <Card.Body>
+          <Card.Title>{item.content}</Card.Title>
+          <Card.Text>{item.description}</Card.Text>
+          <Button variant="primary">Xem chi tiết</Button>
+        </Card.Body>
+      </Card>
+    );
+  });
   return (
     <div>
       <Container className="margin-auto" style={{ width: "60vw" }}>
@@ -15,9 +51,9 @@ const ClassDetail = () => {
           style={{ height: "30vh" }}
         >
           <div className="ps-3 mb-2 text-light">
-            <strong>SE1880-JV_SBA301</strong>
+            <strong>{data?.name}</strong>
             <br />
-            Fullstack Java ReactJS + Spring Boot
+            {data?.title}
           </div>
         </Card>
         <Row>
@@ -32,7 +68,7 @@ const ClassDetail = () => {
                 </span>
               </div>
               <div className="my-3 ps-3 text-primary fs-5 d-flex justify-content-around">
-                <span>54ufkmm4</span>{" "}
+                <span>{data?.code}</span>{" "}
                 <i
                   className={`bi bi-zoom-in ${style.zoom}`}
                   onClick={() => setZoom(!zoom)}
@@ -65,6 +101,7 @@ const ClassDetail = () => {
                 </Form.Group>
               </Form>
             </Card>
+            {renderLessons}
           </Col>
         </Row>
       </Container>

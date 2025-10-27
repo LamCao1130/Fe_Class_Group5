@@ -31,7 +31,10 @@ const MenuTeacher = () => {
       );
       console.log(res);
       let listNew = res?.data.map((p) => {
-        return { key: p.id, label: p.name };
+        return {
+          key: p.id,
+          label: <Link to={"/teacher/manageClass/" + p.id}>{p.name}</Link>,
+        };
       });
       setListClass(listNew);
     };
@@ -39,14 +42,14 @@ const MenuTeacher = () => {
   }, []);
   const items = [
     {
-      key: "1",
+      key: "m1",
       icon: <PieChartOutlined />,
       label: <Link to="/teacher">Dashboard</Link>,
     },
     {
-      key: "2",
+      key: "m2",
       icon: <DesktopOutlined />,
-      label: <Link to="/teacher/manageClass">Quản lý lớp học</Link>,
+      label: "Quản lý lớp học",
       children: listClass,
     },
     {

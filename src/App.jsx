@@ -9,10 +9,22 @@ import "./App.css";
 
 function App() {
   const [showRegister, setShowRegister] = useState(false);
+  const [dataBase64, setDataBase64] = useState(null);
+
+  const [codeSend, setCodeSend] = useState({});
 
   const handleCloseRegister = () => setShowRegister(false);
   const handleShowRegister = () => setShowRegister(true);
   const [loginText, setLoginText] = useState({});
+
+  const [show2FA, setShow2FA] = useState(false);
+
+  const handleClose2FA = () => {
+    setLoginText({ ...loginText, email: "", password: "" });
+    setShow2FA(false);
+  };
+  const handleShow2FA = () => setShow2FA(true);
+
   const [registerText, setRegisterText] = useState({
     email: "",
     password: "",
@@ -29,18 +41,22 @@ function App() {
     try {
       let res = await axios.post("http://localhost:8080/api/login", loginText);
       console.log(res);
-      localStorage.setItem("accessToken", res.data.accessToken);
-      localStorage.setItem("refreshToken", res.data.refreshToken);
-      let token = localStorage.getItem("accessToken");
-      const decoded = jwtDecode(token);
-
-      console.log(decoded);
-      if (decoded.role === "TEACHER") {
-        navigate("/teacher");
-      } else if (decoded.role === "STUDENT") {
-        navigate("/student/homepage");
+      if (res.status === 200) {
+        let dataFA = res.data;
+        let emailSend2 = loginText.email;
+        setCodeSend({ ...codeSend, email: emailSend2 });
+        setDataBase64(dataFA);
+        setLoginText({});
+        handleShow2FA();
+      } else if (res.status === 206) {
+        let emailSend2 = loginText.email;
+        setCodeSend({ ...codeSend, email: emailSend2 });
+        setLoginText({});
+        handleShow2FA();
       }
-    } catch (e) {}
+    } catch (e) {
+      toast.error("Sai tài khoản hoặc mật khẩu");
+    }
     // setShowLogin(false);
   };
 
@@ -137,6 +153,7 @@ function App() {
           <div className="login">
             <input
               type="text"
+              value={loginText?.email}
               onChange={(e) => {
                 setLoginText({ ...loginText, email: e.target.value });
               }}
@@ -144,6 +161,7 @@ function App() {
             />
             <input
               type="password"
+              value={loginText?.password}
               onChange={(e) => {
                 setLoginText({ ...loginText, password: e.target.value });
               }}
@@ -258,6 +276,71 @@ function App() {
           </Button>
           <Button variant="primary" onClick={() => registerAccount()}>
             Đăng Ký
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={show2FA} onHide={handleClose2FA}>
+        <Modal.Header closeButton>
+          <Modal.Title>Bảo mật lớp 2</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ textAlign: "center" }}>
+          <h3>Quét mã QR bằng Google Authenticator</h3>
+          <img
+            src={`data:image/png;base64,${dataBase64?.qrCodeBase64}`}
+            alt="Vui lòng nhập mã đã lưu bằng google authenticator"
+            style={{ width: 250, height: 250 }}
+          />
+          <code>{dataBase64?.secret}</code>
+          <br />
+          <input
+            type="text"
+            onChange={(e) => {
+              setCodeSend({ ...codeSend, secretCode: e.target.value });
+            }}
+            style={{
+              padding: "10px",
+              border: "1px solid grey",
+              borderRadius: "15px",
+            }}
+            placeholder="Nhập mã gồm 6 ký tự"
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose2FA}>
+            Hủy
+          </Button>
+          <Button
+            variant="primary"
+            onClick={async () => {
+              let se2 = { ...codeSend };
+              if (dataBase64?.secret != null) {
+                se2.base32Code = dataBase64.secret;
+              }
+              try {
+                let res2 = await axios.post(
+                  "http://localhost:8080/api/v1/public/2fa-verify",
+                  se2
+                );
+                if (res2.status === 200) {
+                  localStorage.setItem("accessToken", res2.data.accessToken);
+                  localStorage.setItem("refreshToken", res2.data.refreshToken);
+                  let token = localStorage.getItem("accessToken");
+                  const decoded = jwtDecode(token);
+
+                  console.log(decoded);
+                  if (decoded.role === "TEACHER") {
+                    navigate("/teacher");
+                  } else if (decoded.role === "STUDENT") {
+                    navigate("/student/homepage");
+                  }
+                }
+              } catch (e) {
+                toast.error("sai mã");
+              }
+            }}
+          >
+            Nhập
           </Button>
         </Modal.Footer>
       </Modal>
