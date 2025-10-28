@@ -334,6 +334,9 @@ function App() {
                   } else if (decoded.role === "STUDENT") {
                     navigate("/student/homepage");
                   }
+                  else if(decoded.role==="ADMIN"){
+                    navigate("/admin/dashboard");
+                  }
                 }
               } catch (e) {
                 toast.error("sai mã");
