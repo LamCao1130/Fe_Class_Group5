@@ -1,26 +1,50 @@
 import React, { useEffect } from "react";
-import { Card, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Col,
+  Container,
+  Form,
+  InputGroup,
+  Row,
+} from "react-bootstrap";
 import style from "../../../css/ClassDetail.module.css";
 import { useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import teacherService from "../services/TeacherSerivceApi";
+import AddLessonModal from "../components/AddLessonModal";
 
 const ClassDetail = () => {
+  const [showAddLesson, setShowAddLesson] = useState(false);
   const [zoom, setZoom] = useState(false);
+  const navigate = useNavigate();
   const [data, setData] = useState({});
+  const [dataLessons, setDataLessons] = useState([]);
   const { id } = useParams();
   useEffect(() => {
     async function fetchDetail() {
       try {
         const res = await teacherService.getClassroomDetailById(id);
+        const resLesson = await teacherService.getLessonByClassroomId(id);
         setData(res);
-        console.log(res);
+        setDataLessons(resLesson);
       } catch (error) {
         console.error("Lỗi khi lấy chi tiết lớp học:", error);
       }
     }
     fetchDetail();
   }, [id]);
+  let renderLessons = dataLessons?.map((item) => {
+    return (
+      <Card className="mt-3" onClick={() => navigate(`lesson/${item.id}`)}>
+        <Card.Header className="text-primary">{item.title}</Card.Header>
+        <Card.Body>
+          <Card.Title>{item.content}</Card.Title>
+          <Card.Text>{item.description}</Card.Text>
+        </Card.Body>
+      </Card>
+    );
+  });
   return (
     <div>
       <Container className="margin-auto" style={{ width: "60vw" }}>
@@ -63,24 +87,22 @@ const ClassDetail = () => {
           </Col>
           <Col>
             <Card className="mt-3 p-3">
-              <Form className="mt-3 ms-3 ">
-                <Form.Group controlId="exampleForm.ControlTextarea1">
-                  {/* Nhãn cho Textarea */}
-                  <Form.Label>Nội dung thông báo</Form.Label>
-
-                  <Form.Control
-                    // Bắt buộc phải thêm thuộc tính này để biến nó thành Textarea
-                    as="textarea"
-                    // Thiết lập số lượng dòng hiển thị mặc định (ví dụ: 3 dòng)
-                    rows={3}
-                    // Thêm placeholder
-                    placeholder="Nhập nội dung của bạn tại đây..."
-                  />
-                </Form.Group>
-              </Form>
+              <div className={style.addNewLessonContainer}>
+                <Button
+                  variant="success"
+                  onClick={() => setShowAddLesson(true)}
+                >
+                  <i className="bi bi-plus-circle me-2"></i> Thêm mới Bài học
+                </Button>
+              </div>
             </Card>
+            {renderLessons}
           </Col>
         </Row>
+        <AddLessonModal
+          show={showAddLesson}
+          handleClose={() => setShowAddLesson(false)}
+        ></AddLessonModal>
       </Container>
     </div>
   );

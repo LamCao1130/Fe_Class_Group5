@@ -42,12 +42,12 @@ const MenuTeacher = () => {
   }, []);
   const items = [
     {
-      key: "1",
+      key: "m1",
       icon: <PieChartOutlined />,
       label: <Link to="/teacher">Dashboard</Link>,
     },
     {
-      key: "2",
+      key: "m2",
       icon: <DesktopOutlined />,
       label: "Quản lý lớp học",
       children: listClass,
