@@ -13,10 +13,11 @@ import {
   Table,
 } from "react-bootstrap";
 import AddGrammarModal from "../components/AddGrammarModal";
-import { toast } from "react-toastify";
 
 const LessonDetail = () => {
   const { id } = useParams();
+
+  const [render, setRender] = useState(false);
 
   const [showAddGrammar, setShowAddGrammar] = useState(false);
 
@@ -31,8 +32,8 @@ const LessonDetail = () => {
     }
     fetchListVocabary();
     fetchListGrammar();
-  }, []);
-  const [activeTab, setActiveTab] = useState("all");
+  }, [render]);
+  const [activeTab, setActiveTab] = useState("vocab");
 
   const navigate = useNavigate();
 
@@ -41,6 +42,11 @@ const LessonDetail = () => {
   const [grammarList, setGrammarList] = useState([]);
 
   const [questionList, setQuestionList] = useState([]);
+
+  const handleDelete = (id) => {
+    teacherService.deleteVocab(id);
+    setRender(!render);
+  };
 
   return (
     <>
@@ -97,7 +103,7 @@ const LessonDetail = () => {
                 >
                   Thêm từ mới
                 </Dropdown.Item>
-                <Dropdown.Item onClick={() => setGrammarList(true)}>
+                <Dropdown.Item onClick={() => setShowAddGrammar(true)}>
                   Thêm ngữ pháp
                 </Dropdown.Item>
                 <Dropdown.Item>Thêm câu hỏi</Dropdown.Item>
