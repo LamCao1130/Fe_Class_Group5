@@ -95,11 +95,10 @@ let router = createBrowserRouter([
       </AdminProtectedRouter>
     ),
     children: [
-      { index: true, element: <Navigate to="dashboard" replace /> },
       { path: "dashboard", element: <Dashboard /> },
       { path: "teachers", element: <Teachers /> },
       { path: "teachers/:id", element: <TeacherDetail /> },
-      { path: "users", element: <Users /> },
+      { path: "students", element: <Users /> },
     ],
   },
 ]);
