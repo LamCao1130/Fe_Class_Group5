@@ -332,7 +332,7 @@ function App() {
                   if (decoded.role === "TEACHER") {
                     navigate("/teacher");
                   } else if (decoded.role === "STUDENT") {
-                    navigate("/student/homepage");
+                    navigate("/student/classroom");
                   }
                 }
               } catch (e) {
