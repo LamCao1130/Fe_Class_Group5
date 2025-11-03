@@ -18,6 +18,7 @@ import Students from "../pages/admin/pages/Students";
 import StudentProtectRouter from "./StudentProtectRouter";
 import AdminProtectedRouter from "./AdminProtectedRouter";
 import AddVocab from "../pages/teacher/pages/AddVocab";
+import StudentDetail from "../pages/admin/pages/StudentDetail";
 let router = createBrowserRouter([
   {
     path: "/fail403",
@@ -93,6 +94,7 @@ let router = createBrowserRouter([
       { path: "teachers", element: <Teachers /> },
       { path: "teachers/:id", element: <TeacherDetail /> },
       { path: "students", element: <Students /> },
+      { path: "student/:id" ,element: <StudentDetail /> }
     ],
   },
 ]);
