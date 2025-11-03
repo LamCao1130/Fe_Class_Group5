@@ -1,14 +1,14 @@
 import { Outlet } from "react-router";
-import HeaderComponent from "../components/HeaderStudent";
 import Sidebar from "../components/Sidebar";
 import { Container,Row,Col } from "react-bootstrap";
+import HeaderCLassStudent from "../components/HeaderCLassStudent";
 
 const MainLayout = () => {
   return (
     <div
       style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
     >
-      <HeaderComponent />
+      <HeaderCLassStudent />
 
       <Container fluid style={{ flex: "1 0 auto" }}>
         <Row style={{ minHeight: "calc(100vh - 56px - 72px)" }}>

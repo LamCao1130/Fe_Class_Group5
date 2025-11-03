@@ -110,7 +110,7 @@ const ProfilePage = () => {
         </Row>
       </Card>
 
-      {/* MODAL CHỈNH SỬA THÔNG TIN */}
+      {/*CHỈNH SỬA THÔNG TIN */}
       <Modal show={showEditModal} onHide={handleCloseEdit} centered>
         <Modal.Header closeButton>
           <Modal.Title>Chỉnh sửa hồ sơ</Modal.Title>
