@@ -336,6 +336,9 @@ function App() {
                   } else if(decoded.role === "ADMIN"){
                     navigate("/admin/dashboard");
                   }
+                  else if(decoded.role==="ADMIN"){
+                    navigate("/admin/dashboard");
+                  }
                 }
               } catch (e) {
                 toast.error("sai mã");
