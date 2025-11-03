@@ -55,5 +55,4 @@ function Sidebar() {
     </Nav>
   );
 }
-
 export default Sidebar;

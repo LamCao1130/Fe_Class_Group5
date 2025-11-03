@@ -10,32 +10,13 @@ import ClassDetail from "../pages/teacher/pages/ClassDetail";
 import ListStudent from "../pages/teacher/pages/ListStudent";
 import RouterPrivate from "./RouterPrivate";
 import TeacherProtectedRouter from "./TeacherProtectedRouter";
-import AdminLayout from "../pages/admin/pages/AdminLayout";
-import Dashboard from "../pages/admin/pages/Dashboard";
-import Teachers from "../pages/admin/pages/Teachers";
-import TeacherDetail from "../pages/admin/pages/TeacherDetail";
-import Users from "../pages/admin/pages/Users";
-import StudentProtectRouter from "./StudentProtectRouter";
-import AdminProtectedRouter from "./AdminProtectedRouter";
-import AddVocab from "../pages/teacher/pages/AddVocab";
-import MainLayout from "../pages/student/pages/MainLayout";
-import ClassRoomList from "../pages/student/pages/ClassRoomList";
-import ProfilePage from "../pages/student/pages/ProfilePage";
+import Fail403 from "../components/Fail403";
+import HeaderCLassStudent from "../pages/student/components/HeaderCLassStudent";
+
 let router = createBrowserRouter([
-  {
-    path: "/fail403",
-    element: <Fail403 />,
-    errorElement: <Fail403 />,
-  },
-  {
-    path: "/",
-    element: (
-      <RouterPrivate>
-        <App />
-      </RouterPrivate>
-    ),
-    errorElement: <Fail403 />,
-  },
+  { path: "/fail403", element: <Fail403 /> },
+  { path: "/", element: <App /> },
+  { path: "/student/homepage", element: <HomePageStudent /> },
   {
     path: "/teacher",
     element: (
@@ -73,7 +54,7 @@ let router = createBrowserRouter([
     path: "/student",
     element: (
       <StudentProtectRouter>
-        <HeaderStudent />
+        <HeaderCLassStudent />
       </StudentProtectRouter>
     ),
     errorElement: <Fail403 />,
