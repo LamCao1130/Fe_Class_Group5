@@ -1,0 +1,54 @@
+.sidebar {
+  width: 250px; /* Chiều rộng cố định giống Classroom */
+  height: 100vh; /* Chiều cao toàn màn hình */
+  background-color: #f8f9fa; /* Màu nền nhạt */
+  border-right: 1px solid #e0e0e0; /* Đường viền phải */
+  padding: 20px 0;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Bóng nhẹ */
+  position: fixed; /* Cố định bên trái */
+  left: 0;
+  top: 0;
+  overflow-y: auto; /* Cuộn nếu nội dung dài */
+}
+
+.sidebar-header {
+  padding: 0 20px 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.sidebar-header h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #1a73e8; /* Màu xanh giống Google */
+  font-weight: 500;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-item {
+  margin: 10px 0;
+}
+
+.sidebar-item a {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  text-decoration: none;
+  color: #3c4043; /* Màu chữ xám */
+  font-size: 16px;
+  transition: background-color 0.2s;
+}
+
+.sidebar-item a:hover {
+  background-color: #e8f0fe; /* Màu hover xanh nhạt */
+  color: #1a73e8;
+}
+
+.icon {
+  margin-right: 12px;
+  font-size: 18px;
+}

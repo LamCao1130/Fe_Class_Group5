@@ -17,6 +17,10 @@ import TeacherDetail from "../pages/admin/pages/TeacherDetail";
 import StudentProtectRouter from "./StudentProtectRouter";
 import AdminProtectedRouter from "./AdminProtectedRouter";
 import AddVocab from "../pages/teacher/pages/AddVocab";
+import MainLayout from "../pages/student/pages/MainLayout";
+import ClassRoomList from "../pages/student/pages/ClassRoomList";
+import ProfilePage from "../pages/student/pages/ProfilePage";
+import HeaderCLassStudent from "../pages/student/components/HeaderCLassStudent";
 import LessonDetail from "../pages/teacher/pages/LessonDetail";
 let router = createBrowserRouter([
   {
@@ -75,7 +79,7 @@ let router = createBrowserRouter([
     path: "/student",
     element: (
       <StudentProtectRouter>
-        <HeaderStudent />
+        <HeaderCLassStudent />
       </StudentProtectRouter>
     ),
     errorElement: <Fail403 />,
@@ -86,6 +90,22 @@ let router = createBrowserRouter([
       },
     ],
   },
+    { path: "/student", element: <MainLayout />,
+      children:[
+        {
+          path:"classroom",
+          element:<ClassRoomList/>
+        }
+      ]
+     },
+         { path: "/student", element: <MainLayout />,
+      children:[
+        {
+          path:"profileStudent",
+          element:<ProfilePage/>
+        }
+      ]
+     },
   {
     path: "/admin",
     element: (
