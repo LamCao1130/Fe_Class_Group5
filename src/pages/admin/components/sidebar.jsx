@@ -10,7 +10,7 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '' },
     { id: 'teachers', label: 'Teachers', icon: GraduationCap, path: 'teachers' },
-    { id: 'classroom', label: 'ClassRoom', icon: Users, path: 'classroom' }
+    { id: 'users', label: 'Users', icon: Users, path: 'users' }
   ]
 
   const handleMenuClick = (item) => {
