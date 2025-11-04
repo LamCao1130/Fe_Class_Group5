@@ -55,7 +55,9 @@ function App() {
         handleShow2FA();
       }
     } catch (e) {
-      toast.error("Sai tài khoản hoặc mật khẩu");
+      const errorMessage = e.response?.data || "Sai tài khoản hoặc mật khẩu";
+
+      toast.error(errorMessage);
     }
     // setShowLogin(false);
   };
@@ -333,7 +335,7 @@ function App() {
                     navigate("/teacher");
                   } else if (decoded.role === "STUDENT") {
                     navigate("/student/homepage");
-                  } else if(decoded.role === "ADMIN"){
+                  } else if (decoded.role === "ADMIN") {
                     navigate("/admin/dashboard");
                   }
                 }
