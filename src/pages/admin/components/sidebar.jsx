@@ -13,6 +13,9 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
     { id: 'students', label: 'Students', icon: Users, path: 'student' }
   ]
 
+
+  
+
   const handleMenuClick = (item) => {
     setActiveMenu(item.id)
     navigate(item.path)
