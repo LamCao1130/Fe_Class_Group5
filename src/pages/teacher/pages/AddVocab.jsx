@@ -1,6 +1,11 @@
 import Item from "antd/es/list/Item";
 import React, { useState } from "react";
 import { Button, Table } from "react-bootstrap";
+import { Modal } from "antd";
+import teacherService from "../services/TeacherSerivceApi";
+import { ca } from "zod/v4/locales";
+import { useParams } from "react-router";
+
 const initialRowDefault = {
   EnglishWord: "",
   type: "",
@@ -9,6 +14,30 @@ const initialRowDefault = {
   example: "",
 };
 const AddVocab = () => {
+  let { id } = useParams();
+  const [isModalOpenImport, setIsModalOpenImport] = useState(false);
+
+  const [file, setFile] = useState(null);
+
+  const showModalImport = () => {
+    setIsModalOpenImport(true);
+  };
+
+  const handleOkImport = async () => {
+    if (file) {
+      try {
+        let res = await teacherService.importVocab(file, id);
+        console.log("File uploaded successfully:", res);
+      } catch (error) {
+        console.log("Error uploading file:", error);
+      }
+    }
+    setIsModalOpenImport(false);
+  };
+
+  const handleCancelImport = () => {
+    setIsModalOpenImport(false);
+  };
   const [initailaRow, setInitialRow] = useState({ ...initialRowDefault });
   const [newword, setNewword] = useState([initialRowDefault]);
   const [submited, setsubmited] = useState(false);
@@ -54,13 +83,30 @@ const AddVocab = () => {
   return (
     <div>
       <div className="d-flex justify-content-between mb-3 mx-1 mt-2">
-        <h2>New Vocabuary</h2>
-        <button
+        <h2>New Vocabulary</h2>
+        <Button type="primary" onClick={showModalImport}>
+          Import from Excel
+        </Button>
+        <Modal
+          title="Basic Modal"
+          closable={{ "aria-label": "Custom Close Button" }}
+          open={isModalOpenImport}
+          onOk={handleOkImport}
+          onCancel={handleCancelImport}
+        >
+          <input
+            type="file"
+            name=""
+            id=""
+            onChange={(e) => setFile(e.target.files[0])}
+          />
+        </Modal>
+        <Button
           onClick={() => handleAddRow()}
           className="border border-none  bg-primary"
         >
           Create new{" "}
-        </button>
+        </Button>
       </div>
       <Table striped bordered hover>
         <thead>
