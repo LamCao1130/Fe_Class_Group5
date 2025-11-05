@@ -22,6 +22,7 @@ import ClassRoomList from "../pages/student/pages/ClassRoomList";
 import ProfilePage from "../pages/student/pages/ProfilePage";
 import HeaderCLassStudent from "../pages/student/components/HeaderCLassStudent";
 import LessonDetail from "../pages/teacher/pages/LessonDetail";
+import AddQuestion from "../pages/teacher/pages/AddQuestion";
 let router = createBrowserRouter([
   {
     path: "/fail403",
@@ -52,6 +53,10 @@ let router = createBrowserRouter([
       {
         path: "lesson/:id/addvocab",
         element: <AddVocab />,
+      },
+      {
+        path: "lesson/:id/addQuestion",
+        element: <AddQuestion></AddQuestion>,
       },
       {
         path: "manageClass/:id",
