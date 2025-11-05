@@ -59,6 +59,10 @@ let router = createBrowserRouter([
         element: <AddQuestion></AddQuestion>,
       },
       {
+        path: "lesson/:id",
+        element: <LessonDetail></LessonDetail>,
+      },
+      {
         path: "manageClass/:id",
         element: (
           <TeacherProtectedRouter>
@@ -72,10 +76,6 @@ let router = createBrowserRouter([
           },
           { path: "list", element: <ListStudent></ListStudent> },
           ,
-          {
-            path: "lesson/:id",
-            element: <LessonDetail></LessonDetail>,
-          },
         ],
       },
     ],
@@ -95,22 +95,26 @@ let router = createBrowserRouter([
       },
     ],
   },
-    { path: "/student", element: <MainLayout />,
-      children:[
-        {
-          path:"classroom",
-          element:<ClassRoomList/>
-        }
-      ]
-     },
-         { path: "/student", element: <MainLayout />,
-      children:[
-        {
-          path:"profileStudent",
-          element:<ProfilePage/>
-        }
-      ]
-     },
+  {
+    path: "/student",
+    element: <MainLayout />,
+    children: [
+      {
+        path: "classroom",
+        element: <ClassRoomList />,
+      },
+    ],
+  },
+  {
+    path: "/student",
+    element: <MainLayout />,
+    children: [
+      {
+        path: "profileStudent",
+        element: <ProfilePage />,
+      },
+    ],
+  },
   {
     path: "/admin",
     element: (

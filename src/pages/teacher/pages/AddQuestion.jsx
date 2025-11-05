@@ -203,13 +203,13 @@ const AddQuestion = () => {
     console.log(createQuestion);
     await teacherService.createQuestion(createQuestion);
     showAlert("Tạo Part thành công!", "success");
-    // navigate(`/teacher/lesson/${lessonId.id}`);
-    // setPartTitle("");
-    // setPartType("fill");
-    // setReadingPassage("");
-    // setQuestions([
-    //   { text: "", fillAnswer: "", mcOptions: [""], correctAnswers: [] },
-    // ]);
+    navigate(`/teacher/lesson/${lessonId.id}`);
+    setPartTitle("");
+    setPartType("fill");
+    setReadingPassage("");
+    setQuestions([
+      { text: "", fillAnswer: "", mcOptions: [""], correctAnswers: [] },
+    ]);
   };
 
   const showAlert = (msg, variant) => {
