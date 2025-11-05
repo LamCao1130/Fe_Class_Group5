@@ -166,7 +166,7 @@ const AddQuestion = () => {
           const filledOptions = q.mcOptions.map((o, index) => {
             return {
               optionText: o.trim(),
-              isCorrect: q.correctAnswers.includes(index),
+              correctAnswer: q.correctAnswers.includes(index),
             };
           });
           if (filledOptions.length < 2 || q.correctAnswers.length === 0)
