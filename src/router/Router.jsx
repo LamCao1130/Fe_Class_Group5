@@ -14,10 +14,13 @@ import AdminLayout from "../pages/admin/pages/AdminLayout";
 import Dashboard from "../pages/admin/pages/Dashboard";
 import Teachers from "../pages/admin/pages/Teachers";
 import TeacherDetail from "../pages/admin/pages/TeacherDetail";
-import Users from "../pages/admin/pages/Users";
 import StudentProtectRouter from "./StudentProtectRouter";
 import AdminProtectedRouter from "./AdminProtectedRouter";
 import AddVocab from "../pages/teacher/pages/AddVocab";
+import MainLayout from "../pages/student/pages/MainLayout";
+import ClassRoomList from "../pages/student/pages/ClassRoomList";
+import ProfilePage from "../pages/student/pages/ProfilePage";
+import HeaderCLassStudent from "../pages/student/components/HeaderCLassStudent";
 import LessonDetail from "../pages/teacher/pages/LessonDetail";
 import AddQuestion from "../pages/teacher/pages/AddQuestion";
 let router = createBrowserRouter([
@@ -81,7 +84,7 @@ let router = createBrowserRouter([
     path: "/student",
     element: (
       <StudentProtectRouter>
-        <HeaderStudent />
+        <HeaderCLassStudent />
       </StudentProtectRouter>
     ),
     errorElement: <Fail403 />,
@@ -92,6 +95,22 @@ let router = createBrowserRouter([
       },
     ],
   },
+    { path: "/student", element: <MainLayout />,
+      children:[
+        {
+          path:"classroom",
+          element:<ClassRoomList/>
+        }
+      ]
+     },
+         { path: "/student", element: <MainLayout />,
+      children:[
+        {
+          path:"profileStudent",
+          element:<ProfilePage/>
+        }
+      ]
+     },
   {
     path: "/admin",
     element: (
@@ -103,7 +122,6 @@ let router = createBrowserRouter([
       { path: "dashboard", element: <Dashboard /> },
       { path: "teachers", element: <Teachers /> },
       { path: "teachers/:id", element: <TeacherDetail /> },
-      { path: "students", element: <Users /> },
     ],
   },
 ]);

@@ -58,5 +58,20 @@ let teacherService = {
     );
     return res.data;
   },
+  importVocab: async (file, lessonId) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("lessonId", lessonId);
+    let res = await axiosApi.post(
+      "http://localhost:8080/api/v1/public/vocab/import",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return res;
+  },
 };
 export default teacherService;
