@@ -1,8 +1,9 @@
 import React from "react";
 import { Container, Dropdown, Navbar } from "react-bootstrap";
 import styles from "../../../css/TeacherPage.module.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const HeaderPageTeacher = ({ setShowJoinModal }) => {
+  let navigate = useNavigate();
   return (
     <div>
       <Navbar className="bg-body-tertiary">
@@ -56,7 +57,14 @@ const HeaderPageTeacher = ({ setShowJoinModal }) => {
                   <i className="bi bi-person-circle me-2"></i> Xem Hồ sơ
                 </Dropdown.Item>
                 <Dropdown.Divider />
-                <Dropdown.Item className="text-danger">
+                <Dropdown.Item
+                  className="text-danger"
+                  onClick={() => {
+                    localStorage.removeItem("accessToken");
+                    localStorage.removeItem("refreshToken");
+                    navigate("/");
+                  }}
+                >
                   <i className="bi bi-box-arrow-right me-2"></i> Đăng xuất
                 </Dropdown.Item>
               </Dropdown.Menu>

@@ -8,7 +8,7 @@ const EditStudent = ({
   handleInputChange,
   handleSave,
 }) => {
-  if (!studentData) return null; // tránh lỗi khi chưa chọn student
+  if (!studentData) return null; 
 
   return (
     <Modal show={show} onHide={handleClose} centered>

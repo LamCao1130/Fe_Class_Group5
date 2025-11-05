@@ -20,20 +20,58 @@ let teacherService = {
     return res.data;
   },
   getVocabByLessonId: async (id) => {
-    let res = await axiosApi.get(`public/vocab/lesson/${id}`);
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/public/vocab/lesson/${id}`
+    );
     return res.data;
   },
   getGrammrByLessonId: async (id) => {
-    let res = await axiosApi.get(`grammar/get-by-lesson/${id}`);
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/grammar/get-by-lesson/${id}`
+    );
     return res.data;
   },
   editVocab: async (data) => {
-    let res = await axiosApi.put(`public/vocab/update`, data);
+    let res = await axiosApi.put(
+      `http://localhost:8080/api/v1/public/vocab/update`,
+      data
+    );
     return res.data;
   },
   deleteVocab: async (id) => {
-    let res = await axiosApi.delete(`public/vocab/delete/${id}`);
+    let res = await axiosApi.delete(
+      `http://localhost:8080/api/v1/public/vocab/delete/${id}`
+    );
     return res.data;
+  },
+
+  getQuestionTypeByLessonId: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/questionTypes/lesson/${id}`
+    );
+    return res.data;
+  },
+  createQuestion: async (data) => {
+    let res = await axiosApi.post(
+      "http://localhost:8080/api/v1/Question/create",
+      data
+    );
+    return res.data;
+  },
+  importVocab: async (file, lessonId) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("lessonId", lessonId);
+    let res = await axiosApi.post(
+      "http://localhost:8080/api/v1/public/vocab/import",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return res;
   },
 };
 export default teacherService;

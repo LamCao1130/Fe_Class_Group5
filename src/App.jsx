@@ -332,7 +332,10 @@ function App() {
                   if (decoded.role === "TEACHER") {
                     navigate("/teacher");
                   } else if (decoded.role === "STUDENT") {
+                    navigate("/student/classroom");
                     navigate("/student/homepage");
+                  } else if(decoded.role === "ADMIN"){
+                    navigate("/admin/dashboard");
                   }
                   else if(decoded.role==="ADMIN"){
                     navigate("/admin/dashboard");

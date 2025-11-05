@@ -17,10 +17,14 @@ import TeacherDetail from "../pages/admin/pages/TeacherDetail";
 import Students from "../pages/admin/pages/Students";
 import StudentProtectRouter from "./StudentProtectRouter";
 import AdminProtectedRouter from "./AdminProtectedRouter";
-import AddVocab from "../pages/teacher/pages/AddVocab";
 import StudentDetail from "../pages/admin/pages/StudentDetail";
+import AddVocab from "../pages/teacher/pages/AddVocab";
+import MainLayout from "../pages/student/pages/MainLayout";
+import ClassRoomList from "../pages/student/pages/ClassRoomList";
+import ProfilePage from "../pages/student/pages/ProfilePage";
+import HeaderCLassStudent from "../pages/student/components/HeaderCLassStudent";
 import LessonDetail from "../pages/teacher/pages/LessonDetail";
-
+import AddQuestion from "../pages/teacher/pages/AddQuestion";
 let router = createBrowserRouter([
   {
     path: "/fail403",
@@ -53,6 +57,14 @@ let router = createBrowserRouter([
         element: <AddVocab />,
       },
       {
+        path: "lesson/:id/addQuestion",
+        element: <AddQuestion></AddQuestion>,
+      },
+      {
+        path: "lesson/:id",
+        element: <LessonDetail></LessonDetail>,
+      },
+      {
         path: "manageClass/:id",
         element: (
           <TeacherProtectedRouter>
@@ -64,11 +76,8 @@ let router = createBrowserRouter([
             path: "",
             element: <ClassDetail />,
           },
-          { path: "list", element: <ListStudent /> },
-          {
-            path: "lesson/:id",
-            element: <LessonDetail />,
-          },
+          { path: "list", element: <ListStudent></ListStudent> },
+          ,
         ],
       },
     ],
@@ -77,7 +86,7 @@ let router = createBrowserRouter([
     path: "/student",
     element: (
       <StudentProtectRouter>
-        <HeaderStudent />
+        <HeaderCLassStudent />
       </StudentProtectRouter>
     ),
     errorElement: <Fail403 />,
@@ -85,6 +94,26 @@ let router = createBrowserRouter([
       {
         path: "homepage",
         element: <HomePageStudent />,
+      },
+    ],
+  },
+  {
+    path: "/student",
+    element: <MainLayout />,
+    children: [
+      {
+        path: "classroom",
+        element: <ClassRoomList />,
+      },
+    ],
+  },
+  {
+    path: "/student",
+    element: <MainLayout />,
+    children: [
+      {
+        path: "profileStudent",
+        element: <ProfilePage />,
       },
     ],
   },
@@ -99,7 +128,7 @@ let router = createBrowserRouter([
       { path: "dashboard", element: <Dashboard /> },
       { path: "teachers", element: <Teachers /> },
       { path: "teachers/:id", element: <TeacherDetail /> },
-      { path: "students", element: <Students /> },
+      { path: "student", element: <Students /> },
       { path: "student/:id", element: <StudentDetail /> },
     ],
   },

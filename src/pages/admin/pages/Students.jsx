@@ -16,7 +16,9 @@ import styles from "./Students.module.css";
 import { Modal } from "react-bootstrap";
 import CreateStudent from "./CreateStudent";
 import EditStudent from "./EditStudent";
+import { useNavigate } from "react-router-dom";
 const Students = () => {
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [students, setStudents] = useState([]);
@@ -217,7 +219,10 @@ const Students = () => {
                 </thead>
                 <tbody>
                   {currentStudents.map((student, index) => (
-                    <tr key={student.id}>
+                    
+                    <tr key={student.id}
+                      onClick={() => navigate(`/admin/student/${student.id}`)}
+                       style={{ cursor: "pointer" }}>
                       <td className="px-3 py-3">{index + 1}</td>
                       <td className="px-3 py-3 fw-semibold">
                         {student.fullName}
@@ -239,7 +244,10 @@ const Students = () => {
                           <Button
                             variant="light"
                             size="sm"
-                            onClick={() => handleEdit(student.id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEdit(student.id);
+                            }}
                             className={`${styles.btnIcon} ${styles.btnEdit}`}
                           >
                             <Edit size={14} />
@@ -247,7 +255,10 @@ const Students = () => {
                           <Button
                             variant="light"
                             size="sm"
-                            onClick={() => handleDelete(student.id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDelete(student.id);
+                            }}
                             className={`${styles.btnIcon} ${styles.btnDelete}`}
                           >
                             <Trash2 size={14} />

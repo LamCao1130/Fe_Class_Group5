@@ -1,6 +1,5 @@
 import React from "react";
 import { Button, Container, Form, InputGroup } from "react-bootstrap";
-// Giả sử đường dẫn import này là chính xác
 import BackgroundImage from "../../../image/bg_image_studenthomepage.jpg";
 
 export default function HomePage() {

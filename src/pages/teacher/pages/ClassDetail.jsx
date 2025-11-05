@@ -36,7 +36,11 @@ const ClassDetail = () => {
   }, [id]);
   let renderLessons = dataLessons?.map((item) => {
     return (
-      <Card className="mt-3" onClick={() => navigate(`lesson/${item.id}`)}>
+      <Card
+        style={{ cursor: "pointer" }}
+        className="mt-3"
+        onClick={() => navigate(`/teacher/lesson/${item.id}`)}
+      >
         <Card.Header className="text-primary">{item.title}</Card.Header>
         <Card.Body>
           <Card.Title>{item.content}</Card.Title>
