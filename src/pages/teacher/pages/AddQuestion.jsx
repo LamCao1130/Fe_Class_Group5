@@ -18,6 +18,7 @@ const partTypes = [
   { value: "mc", label: "Trắc nghiệm" },
   { value: "reading", label: "Reading" },
   { value: "writing", label: "Writing" },
+  { value: "listening", label: "Listening" },
 ];
 
 const AddQuestion = () => {
