@@ -12,6 +12,7 @@ import {
 import { Plus, Question, Trash3 } from "react-bootstrap-icons";
 import { useNavigate, useParams } from "react-router";
 import teacherService from "../services/TeacherSerivceApi";
+import { toast, ToastContainer } from "react-toastify";
 
 const partTypes = [
   { value: "fill", label: "Điền vào chỗ trống" },
@@ -202,8 +203,10 @@ const AddQuestion = () => {
 
     console.log(createQuestion);
     await teacherService.createQuestion(createQuestion);
-    showAlert("Tạo Part thành công!", "success");
-    navigate(`/teacher/lesson/${lessonId.id}`);
+    toast.success("Create question success");
+    setTimeout(() => {
+      navigate(`/teacher/lesson/${lessonId.id}`);
+    }, 300);
     setPartTitle("");
     setPartType("fill");
     setReadingPassage("");
@@ -219,6 +222,12 @@ const AddQuestion = () => {
 
   return (
     <Container className="py-5">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+      />
+
       <Row className="justify-content-center">
         <Col lg={10}>
           <Card className="shadow-sm border-0">
