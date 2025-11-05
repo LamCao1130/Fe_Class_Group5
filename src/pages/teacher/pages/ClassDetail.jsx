@@ -39,7 +39,7 @@ const ClassDetail = () => {
       <Card
         style={{ cursor: "pointer" }}
         className="mt-3"
-        onClick={() => navigate(`lesson/${item.id}`)}
+        onClick={() => navigate(`/teacher/lesson/${item.id}`)}
       >
         <Card.Header className="text-primary">{item.title}</Card.Header>
         <Card.Body>
