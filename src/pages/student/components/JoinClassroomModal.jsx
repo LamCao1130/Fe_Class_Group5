@@ -5,7 +5,7 @@ import { joinClassroom } from "../studentApi/classRoomStudentApi";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router";
 
-const JoinClassroomModal = ({ show, handleClose }) => {
+const JoinClassroomModal = ({ show, handleClose, onSave }) => {
   const [code, setCode] = useState();
   const token = localStorage.getItem("accessToken");
   const decoded = jwtDecode(token);
@@ -16,6 +16,7 @@ const JoinClassroomModal = ({ show, handleClose }) => {
       await joinClassroom({ code: code, accountId: accountId });
       toast.success("Tham gia lớp học thành công");
       handleClose();
+      onSave();
 
       navigate("/student/classRoom");
     } catch (error) {
