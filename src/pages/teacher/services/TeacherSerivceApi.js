@@ -45,12 +45,6 @@ let teacherService = {
     return res.data;
   },
 
-  getQuestionTypeByLessonId: async (id) => {
-    let res = await axiosApi.get(
-      `http://localhost:8080/api/v1/questionTypes/lesson/${id}`
-    );
-    return res.data;
-  },
   createQuestion: async (data) => {
     let res = await axiosApi.post(
       "http://localhost:8080/api/v1/Question/create",
@@ -72,6 +66,37 @@ let teacherService = {
       }
     );
     return res;
+  },
+  getQuestion: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/Question/lesson/${id}`
+    );
+    return res.data;
+  },
+  deleteListQuestionByQuestionType: async (id) => {
+    let res = await axiosApi.delete(
+      `http://localhost:8080/api/v1/Question/deleteByQuestionType/${id}`
+    );
+    return res.data;
+  },
+  deleteReadingPassage: async (id) => {
+    let res = await axiosApi.delete(
+      `http://localhost:8080/api/v1/Question/delete/reading/${id}`
+    );
+    return res.data;
+  },
+  getQuestionType: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/Question/questionType/${id}`
+    );
+    return res.data;
+  },
+  updateQuestionType: async (data) => {
+    let res = await axiosApi.put(
+      `http://localhost:8080/api/v1/Question/update`,
+      data
+    );
+    return res.data;
   },
 };
 export default teacherService;

@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import ClassRoom from "./ClassRoom";
 import { getClassRoomStudentApi } from "../studentApi/classRoomStudentApi";
-function ClassRoomList() {
-  const classes = [
+import { Plus } from "react-bootstrap-icons";
+import JoinClassroomModal from "../components/JoinClassroomModal";
 
-  ];
+function ClassRoomList() {
+  const classes = [];
 
   const [classRoom, setClassRoom] = useState([
     // {
@@ -18,18 +19,32 @@ function ClassRoomList() {
     // { id: 4, title: "Lớp Hóa 10A2", description: "Giáo viên: Cô Phạm Thị D" },
   ]);
 
-  useEffect(()=>{
-    async function getClassRoomStudent(){
+  const [show, setShow] = useState(false);
+
+  const addClassRoom = () => {
+    setShow(true);
+  };
+
+  useEffect(() => {
+    async function getClassRoomStudent() {
       const data = await getClassRoomStudentApi();
       console.log(data);
       setClassRoom(data.content);
-      
     }
     getClassRoomStudent();
-  },[]);
+  }, []);
   return (
     <Container fluid className="p-4">
-      <h2>Các lớp học của bạn</h2>
+      <div className="d-flex justify-content-between">
+        <h2>Các lớp học của bạn</h2>
+        <Button
+          className="mb-3"
+          variant="outline-primary"
+          onClick={addClassRoom}
+        >
+          <Plus /> Tham gia lớp học
+        </Button>
+      </div>
       <Row>
         {classRoom.map((cls) => (
           <Col key={cls.id} sm={12} md={6} lg={4} className="mb-4">
@@ -37,6 +52,10 @@ function ClassRoomList() {
           </Col>
         ))}
       </Row>
+      <JoinClassroomModal
+        handleClose={() => setShow(false)}
+        show={show}
+      ></JoinClassroomModal>
     </Container>
   );
 }

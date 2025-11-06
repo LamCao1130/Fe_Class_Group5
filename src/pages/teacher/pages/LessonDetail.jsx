@@ -12,6 +12,7 @@ import {
 } from "react-bootstrap";
 import VocabDetail from "../components/VocabDetail";
 import GrammarDetail from "../components/GrammarDetail";
+import QuestionDetail from "../components/QuestionDetail";
 
 const LessonDetail = () => {
   const { id } = useParams();
@@ -55,8 +56,8 @@ const LessonDetail = () => {
                 Grammar
               </Nav.Link>
               <Nav.Link
-                onClick={() => setActiveTab("question")}
-                active={activeTab === "question"}
+                onClick={() => setActiveTab("questions")}
+                active={activeTab === "questions"}
                 className="fw-medium"
               >
                 Question
@@ -76,14 +77,20 @@ const LessonDetail = () => {
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <Dropdown.Item
-                    onClick={() => navigate("/teacher/lesson/1/addvocab")}
+                    onClick={() => navigate(`/teacher/lesson/${id}/addvocab`)}
                   >
                     Thêm từ mới
                   </Dropdown.Item>
                   <Dropdown.Item onClick={() => setShowAddGrammar(true)}>
                     Thêm ngữ pháp
                   </Dropdown.Item>
-                  <Dropdown.Item>Thêm câu hỏi</Dropdown.Item>
+                  <Dropdown.Item
+                    onClick={() =>
+                      navigate(`/teacher/lesson/${id}/addQuestion`)
+                    }
+                  >
+                    Thêm câu hỏi
+                  </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             ) : (
@@ -98,9 +105,9 @@ const LessonDetail = () => {
               </Dropdown>
             )}
           </div>
-
-          <VocabDetail activeTab={activeTab} id={id}></VocabDetail>
-          <GrammarDetail activeTab={activeTab} id={id}></GrammarDetail>
+          {activeTab === "vocab" && <VocabDetail id={id} />}
+          {activeTab === "grammar" && <GrammarDetail id={id} />}
+          {activeTab === "questions" && <QuestionDetail id={id} />}
           <Card
             className={`mb-4 shadow-sm border-0 ${
               activeTab != "question" ? "d-none" : ""

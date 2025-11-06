@@ -131,13 +131,13 @@ const AddQuestion = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // if (!partTitle.trim()) {
-    //   showAlert("Vui lòng nhập tiêu đề Part!", "danger");
-    //   return;
-    // }
+    if (!partTitle.trim()) {
+      toast.error("Vui lòng nhập tiêu đề Part!", "danger");
+      return;
+    }
 
-    if (partType === "reading" && !reading) {
-      showAlert("Vui lòng nhập đoạn văn Reading!", "danger");
+    if (partType == "reading" && (!reading.title || !reading.passageContent)) {
+      toast.error("Vui lòng điền đầy đủ thông tin đoạn reading");
       return;
     }
 
@@ -188,7 +188,7 @@ const AddQuestion = () => {
       })
       .filter(Boolean);
     if (validQuestions.length === 0) {
-      showAlert("Vui lòng nhập ít nhất 1 câu hỏi hợp lệ!", "danger");
+      toast.error("Vui lòng điền đầy đủ thông tin question hợp lệ");
       return;
     }
 
@@ -199,7 +199,7 @@ const AddQuestion = () => {
         type: partType,
         questions: validQuestions,
       },
-      readingDto: reading,
+      readingDto: partType == "reading" ? reading : null,
     };
 
     console.log(createQuestion);
