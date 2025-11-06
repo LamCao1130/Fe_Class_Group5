@@ -14,8 +14,10 @@ import AdminLayout from "../pages/admin/pages/AdminLayout";
 import Dashboard from "../pages/admin/pages/Dashboard";
 import Teachers from "../pages/admin/pages/Teachers";
 import TeacherDetail from "../pages/admin/pages/TeacherDetail";
+import Students from "../pages/admin/pages/Students";
 import StudentProtectRouter from "./StudentProtectRouter";
 import AdminProtectedRouter from "./AdminProtectedRouter";
+import StudentDetail from "../pages/admin/pages/StudentDetail";
 import AddVocab from "../pages/teacher/pages/AddVocab";
 import MainLayout from "../pages/student/pages/MainLayout";
 import ClassRoomList from "../pages/student/pages/ClassRoomList";
@@ -23,6 +25,8 @@ import ProfilePage from "../pages/student/pages/ProfilePage";
 import HeaderCLassStudent from "../pages/student/components/HeaderCLassStudent";
 import LessonDetail from "../pages/teacher/pages/LessonDetail";
 import AddQuestion from "../pages/teacher/pages/AddQuestion";
+import LessonList from "../pages/student/pages/LessonList";
+import ExamList from "../pages/student/pages/ExamList";
 let router = createBrowserRouter([
   {
     path: "/fail403",
@@ -47,7 +51,7 @@ let router = createBrowserRouter([
     ),
     children: [
       {
-        path: "", // ROUTE CON: Khi URL là /teacher
+        path: "",
         element: <HomePage />,
       },
       {
@@ -72,7 +76,7 @@ let router = createBrowserRouter([
         children: [
           {
             path: "",
-            element: <ClassDetail></ClassDetail>,
+            element: <ClassDetail />,
           },
           { path: "list", element: <ListStudent></ListStudent> },
           ,
@@ -95,24 +99,19 @@ let router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: "/student",
-    element: <MainLayout />,
-    children: [
       {
-        path: "classroom",
-        element: <ClassRoomList />,
-      },
-    ],
-  },
-  {
     path: "/student",
-    element: <MainLayout />,
+    element: (
+      <StudentProtectRouter>
+        <MainLayout />
+      </StudentProtectRouter>
+    ),
     children: [
-      {
-        path: "profileStudent",
-        element: <ProfilePage />,
-      },
+      // { path: "homepage", element: <HomePageStudent /> },
+      { path: "classroom", element: <ClassRoomList /> },
+      { path: "profileStudent", element: <ProfilePage /> },
+      { path: "classroom/:classRoomId", element: <LessonList />},
+      { path: "classroom/:classRoomId/exam", element: <ExamList />},
     ],
   },
   {
@@ -126,7 +125,10 @@ let router = createBrowserRouter([
       { path: "dashboard", element: <Dashboard /> },
       { path: "teachers", element: <Teachers /> },
       { path: "teachers/:id", element: <TeacherDetail /> },
+      { path: "student", element: <Students /> },
+      { path: "student/:id", element: <StudentDetail /> },
     ],
   },
 ]);
+
 export default router;
