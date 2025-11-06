@@ -14,8 +14,10 @@ import AdminLayout from "../pages/admin/pages/AdminLayout";
 import Dashboard from "../pages/admin/pages/Dashboard";
 import Teachers from "../pages/admin/pages/Teachers";
 import TeacherDetail from "../pages/admin/pages/TeacherDetail";
+import Students from "../pages/admin/pages/Students";
 import StudentProtectRouter from "./StudentProtectRouter";
 import AdminProtectedRouter from "./AdminProtectedRouter";
+import StudentDetail from "../pages/admin/pages/StudentDetail";
 import AddVocab from "../pages/teacher/pages/AddVocab";
 import MainLayout from "../pages/student/pages/MainLayout";
 import ClassRoomList from "../pages/student/pages/ClassRoomList";
@@ -47,7 +49,7 @@ let router = createBrowserRouter([
     ),
     children: [
       {
-        path: "", // ROUTE CON: Khi URL là /teacher
+        path: "",
         element: <HomePage />,
       },
       {
@@ -72,7 +74,7 @@ let router = createBrowserRouter([
         children: [
           {
             path: "",
-            element: <ClassDetail></ClassDetail>,
+            element: <ClassDetail />,
           },
           { path: "list", element: <ListStudent></ListStudent> },
           ,
@@ -126,7 +128,10 @@ let router = createBrowserRouter([
       { path: "dashboard", element: <Dashboard /> },
       { path: "teachers", element: <Teachers /> },
       { path: "teachers/:id", element: <TeacherDetail /> },
+      { path: "student", element: <Students /> },
+      { path: "student/:id", element: <StudentDetail /> },
     ],
   },
 ]);
+
 export default router;
