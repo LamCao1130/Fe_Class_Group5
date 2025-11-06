@@ -25,6 +25,8 @@ import ProfilePage from "../pages/student/pages/ProfilePage";
 import HeaderCLassStudent from "../pages/student/components/HeaderCLassStudent";
 import LessonDetail from "../pages/teacher/pages/LessonDetail";
 import AddQuestion from "../pages/teacher/pages/AddQuestion";
+import LessonList from "../pages/student/pages/LessonList";
+import ExamList from "../pages/student/pages/ExamList";
 let router = createBrowserRouter([
   {
     path: "/fail403",
@@ -97,24 +99,19 @@ let router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: "/student",
-    element: <MainLayout />,
-    children: [
       {
-        path: "classroom",
-        element: <ClassRoomList />,
-      },
-    ],
-  },
-  {
     path: "/student",
-    element: <MainLayout />,
+    element: (
+      <StudentProtectRouter>
+        <MainLayout />
+      </StudentProtectRouter>
+    ),
     children: [
-      {
-        path: "profileStudent",
-        element: <ProfilePage />,
-      },
+      // { path: "homepage", element: <HomePageStudent /> },
+      { path: "classroom", element: <ClassRoomList /> },
+      { path: "profileStudent", element: <ProfilePage /> },
+      { path: "classroom/:classRoomId", element: <LessonList />},
+      { path: "classroom/:classRoomId/exam", element: <ExamList />},
     ],
   },
   {
