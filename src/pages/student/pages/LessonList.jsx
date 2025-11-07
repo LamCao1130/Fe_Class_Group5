@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Spinner,Button } from "react-bootstrap";
-import { getLessonListApi } from "../studentApi/LessonApi";
+import { Container, Row, Col, Spinner, Button } from "react-bootstrap";
 import LessonCard from "./Lesson";
 import { useNavigate, useParams } from "react-router";
+import studentApi from "../studentApi/studentApi";
 
 function LessonList() {
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
-   const { classRoomId } = useParams();
-  const navigate=useNavigate();
+  const { classRoomId } = useParams();
+  const navigate = useNavigate();
   useEffect(() => {
     async function fetchLessons() {
       try {
-        const data = await getLessonListApi(classRoomId);
+        const data = await studentApi.getLessonListApi(classRoomId);
         console.log(data);
         setLessons(data || []);
       } catch (error) {
@@ -26,9 +26,18 @@ function LessonList() {
   }, [classRoomId]);
 
   return (
-    <Container fluid className="p-4" style={{ backgroundColor: "#f8f9fa", minHeight: "100vh" }}>
+    <Container
+      fluid
+      className="p-4"
+      style={{ backgroundColor: "#f8f9fa", minHeight: "100vh" }}
+    >
       <h2 className="fw-bold mb-4 text-primary">Danh sách bài học</h2>
-      <Button onClick={() => navigate(`/student/classroom/${classRoomId}/exam`)} className="mb-3">Exam</Button>
+      <Button
+        onClick={() => navigate(`/student/classroom/${classRoomId}/exam`)}
+        className="mb-3"
+      >
+        Exam
+      </Button>
       {loading ? (
         <div className="text-center mt-5">
           <Spinner animation="border" variant="primary" />
@@ -39,7 +48,12 @@ function LessonList() {
       ) : (
         <Row xs={1} sm={2} md={3} lg={3} className="g-4">
           {lessons.map((lesson) => (
-            <Col key={lesson.id}>
+            <Col
+              key={lesson.id}
+              onClick={() => {
+                navigate("/student/vocab/" + lesson.id);
+              }}
+            >
               <LessonCard
                 id={lesson.id}
                 title={lesson.title}
