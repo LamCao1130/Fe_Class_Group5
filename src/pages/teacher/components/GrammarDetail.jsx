@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Card } from "react-bootstrap";
 import teacherService from "../services/TeacherSerivceApi";
 
-const GrammarDetail = ({ activeTab, id }) => {
+const GrammarDetail = ({ id }) => {
   const [grammarList, setGrammarList] = useState([]);
   useEffect(() => {
     async function fetchListGrammar() {
@@ -14,11 +14,7 @@ const GrammarDetail = ({ activeTab, id }) => {
   }, []);
   return (
     <div>
-      <Card
-        className={`mb-4 shadow-sm border-0 ${
-          activeTab != "grammar" ? "d-none" : ""
-        }`}
-      >
+      <Card className={`mb-4 shadow-sm border-0 `}>
         <Card.Header className="bg-success text-white">
           <strong>Grammar ({grammarList.length})</strong>
         </Card.Header>

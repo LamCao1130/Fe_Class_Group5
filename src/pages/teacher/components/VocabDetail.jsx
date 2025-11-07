@@ -5,7 +5,7 @@ import AddGrammarModal from "./AddGrammarModal";
 import EditVocabModal from "./EditVocab";
 import { toast } from "react-toastify";
 
-const VocabDetail = ({ activeTab, id }) => {
+const VocabDetail = ({ id }) => {
   const [render, setRender] = useState(false);
 
   const [showAddGrammar, setShowAddGrammar] = useState(false);
@@ -35,11 +35,7 @@ const VocabDetail = ({ activeTab, id }) => {
 
   return (
     <div>
-      <Card
-        className={`mb-4 shadow-sm border-0 ${
-          activeTab != "vocab" ? "d-none" : ""
-        }`}
-      >
+      <Card className={`mb-4 shadow-sm border-0 `}>
         {" "}
         <Card.Header className="bg-info text-white">
           <strong>Vocabulary ({vocabList.length})</strong>
@@ -125,7 +121,7 @@ const VocabDetail = ({ activeTab, id }) => {
       ></AddGrammarModal>
       <EditVocabModal
         show={showEdit}
-        handleClose={() => setShowEdit(false)}
+        setShowEdit={setShowEdit}
         vocabData={updateVocab}
         onSave={() => setRender(!render)}
       ></EditVocabModal>
