@@ -27,6 +27,7 @@ import LessonDetail from "../pages/teacher/pages/LessonDetail";
 import AddQuestion from "../pages/teacher/pages/AddQuestion";
 import LessonList from "../pages/student/pages/LessonList";
 import ExamList from "../pages/student/pages/ExamList";
+import ViewVocab from "../pages/student/pages/ViewVocab";
 let router = createBrowserRouter([
   {
     path: "/fail403",
@@ -88,21 +89,6 @@ let router = createBrowserRouter([
     path: "/student",
     element: (
       <StudentProtectRouter>
-        <HeaderCLassStudent />
-      </StudentProtectRouter>
-    ),
-    errorElement: <Fail403 />,
-    children: [
-      {
-        path: "homepage",
-        element: <HomePageStudent />,
-      },
-    ],
-  },
-      {
-    path: "/student",
-    element: (
-      <StudentProtectRouter>
         <MainLayout />
       </StudentProtectRouter>
     ),
@@ -110,8 +96,9 @@ let router = createBrowserRouter([
       // { path: "homepage", element: <HomePageStudent /> },
       { path: "classroom", element: <ClassRoomList /> },
       { path: "profileStudent", element: <ProfilePage /> },
-      { path: "classroom/:classRoomId", element: <LessonList />},
-      { path: "classroom/:classRoomId/exam", element: <ExamList />},
+      { path: "classroom/:classRoomId", element: <LessonList /> },
+      { path: "classroom/:classRoomId/exam", element: <ExamList /> },
+      { path: "vocab/:lessionId", element: <ViewVocab /> },
     ],
   },
   {
