@@ -21,7 +21,7 @@ let teacherService = {
   },
   getVocabByLessonId: async (id) => {
     let res = await axiosApi.get(
-      `http://localhost:8080/api/v1/public/vocab/lesson/${id}`
+      `http://localhost:8080/api/v1/vocab/lesson/${id}`
     );
     return res.data;
   },
@@ -33,14 +33,14 @@ let teacherService = {
   },
   editVocab: async (data) => {
     let res = await axiosApi.put(
-      `http://localhost:8080/api/v1/public/vocab/update`,
+      `http://localhost:8080/api/v1/vocab/update`,
       data
     );
     return res.data;
   },
   deleteVocab: async (id) => {
     let res = await axiosApi.delete(
-      `http://localhost:8080/api/v1/public/vocab/delete/${id}`
+      `http://localhost:8080/api/v1/vocab/delete/${id}`
     );
     return res.data;
   },
@@ -57,7 +57,7 @@ let teacherService = {
     formData.append("file", file);
     formData.append("lessonId", lessonId);
     let res = await axiosApi.post(
-      "http://localhost:8080/api/v1/public/vocab/import",
+      "http://localhost:8080/api/v1/vocab/import",
       formData,
       {
         headers: {
@@ -94,6 +94,13 @@ let teacherService = {
   updateQuestionType: async (data) => {
     let res = await axiosApi.put(
       `http://localhost:8080/api/v1/Question/update`,
+      data
+    );
+    return res.data;
+  },
+  createLesson: async (data) => {
+    let res = await axiosApi.put(
+      `http://localhost:8080/api/v1/lessons/create`,
       data
     );
     return res.data;
