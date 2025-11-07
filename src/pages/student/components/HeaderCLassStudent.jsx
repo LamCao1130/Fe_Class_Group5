@@ -18,7 +18,7 @@ function HeaderCLassStudent() {
            {" "}
       <Container fluid>
                {" "}
-        <Navbar.Brand as={Link} to={"classRoom"}>
+        <Navbar.Brand as={Link} to={"/student/classRoom"}>
           Classroom
         </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />       {" "}
