@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Card, Button, Badge, ListGroup, Form, Modal } from "react-bootstrap";
+import {
+  Card,
+  Button,
+  Badge,
+  ListGroup,
+  Form,
+  Modal,
+  Alert,
+} from "react-bootstrap";
 import teacherService from "../services/TeacherSerivceApi";
 import { useParams } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
@@ -17,7 +25,29 @@ const QuestionDetail = () => {
     setConfirm(true);
     setDeleted(questionType);
   };
+  const speak = (text, lang = "en-US", rate = 1, volume = 1) => {
+    window.speechSynthesis.cancel();
 
+    if (!text || text.trim() === "") return;
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    utterance.rate = rate;
+    utterance.volume = volume;
+    utterance.pitch = 1;
+
+    const voices = window.speechSynthesis.getVoices();
+    const voice =
+      voices.find((v) => v.lang.startsWith(lang.split("-")[0])) ||
+      voices.find((v) => v.default);
+    if (voice) utterance.voice = voice;
+
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const stopSpeaking = () => {
+    window.speechSynthesis.cancel();
+  };
   const handleEdit = (question) => {
     setEditingGroup(question);
     setShowEdit(true);
@@ -177,7 +207,105 @@ const QuestionDetail = () => {
       </Card>
     );
   };
+  const renderListening = (group) => {
+    const { questionTypeDto, listeningPassageDto } = group;
+    const isLong = listeningPassageDto?.passage_type == "long";
+    return (
+      <Card className="mb-4 shadow-sm border-primary">
+        <Card.Header className="bg-primary text-white d-flex justify-content-between align-items-center">
+          <div>
+            <strong>{questionTypeDto.name}</strong>
+            <Badge bg="light" text="dark" className="ms-2">
+              LISTENING {isLong ? "LONG" : "SHORT"}
+            </Badge>
+          </div>
+        </Card.Header>
 
+        <Card.Body>
+          {isLong && listeningPassageDto?.scriptText && (
+            <Alert variant="info" className="mb-4">
+              <Button
+                size="sm"
+                variant="outline-primary"
+                className="ms-3"
+                onClick={() =>
+                  speak(listeningPassageDto.scriptText, "en-US", 0.9)
+                }
+              >
+                Play Script
+              </Button>
+              <Button
+                size="sm"
+                variant="outline-danger"
+                className="ms-1"
+                onClick={stopSpeaking}
+              >
+                Stop
+              </Button>
+              <pre
+                className="mt-3"
+                style={{ whiteSpace: "pre-wrap", fontFamily: "inherit" }}
+              >
+                {listeningPassageDto.scriptText}
+              </pre>
+            </Alert>
+          )}
+
+          <ListGroup variant="flush">
+            {questionTypeDto.questions.map((q, idx) => (
+              <ListGroup.Item key={q.id} className="px-0">
+                <div className="d-flex align-items-start">
+                  <span className="fw-bold text-primary me-2">{idx + 1}.</span>
+                  <div className="flex-grow-1">
+                    <div className="mb-2">
+                      {!isLong && (
+                        <Button
+                          size="sm"
+                          variant="outline-success"
+                          onClick={() => speak(q.listeningText, "en-US", 1)}
+                        >
+                          Play
+                        </Button>
+                      )}
+                      <span className="ms-2 text-muted small">
+                        {q.questionText}
+                      </span>
+                    </div>
+                    {isLong && q.options ? (
+                      <div className="ps-3">
+                        {q.options.map((opt) => (
+                          <Form.Check
+                            key={opt.id}
+                            type="radio"
+                            label={opt.optionText}
+                            disabled
+                            checked={opt.correctAnswer}
+                            className={
+                              opt.correctAnswer
+                                ? "text-success fw-bold"
+                                : "text-muted"
+                            }
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <Alert
+                        variant="light"
+                        className="small py-1 px-2 d-inline-block"
+                      >
+                        <strong>Đáp án:</strong>{" "}
+                        {q.correctAnswer || "(Chưa có)"}
+                      </Alert>
+                    )}
+                  </div>
+                </div>
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Card.Body>
+      </Card>
+    );
+  };
   const renderWriting = (question, index) => {
     return (
       <ListGroup.Item key={question.id} className="border-0 px-0">
@@ -252,6 +380,9 @@ const QuestionDetail = () => {
                         onClick={() =>
                           handleDeleteGroup({
                             id: questionTypeDto.questionTypeId,
+                            listeningId: group?.listeningPassageDto?.id
+                              ? group.listeningPassageDto?.id
+                              : null,
                           })
                         }
                       >
@@ -261,16 +392,24 @@ const QuestionDetail = () => {
                   </Card.Header>
                   <Card.Body>
                     <ListGroup variant="flush">
-                      {questions.map((q, index) => {
-                        if (type === "fill") {
-                          return renderFillInTheBlank(q, 1 + index);
-                        } else if (type === "mc") {
-                          return renderMultipleChoice(q, 1 + index);
-                        } else if (type === "writing") {
-                          return renderWriting(q);
-                        }
-                        return null;
-                      })}
+                      {type === "listening"
+                        ? renderListening(group)
+                        : type === "reading"
+                        ? renderReading(group)
+                        : questions.map((q, index) => {
+                            const questionNumber = 1 + index;
+
+                            if (type === "fill") {
+                              return renderFillInTheBlank(q, questionNumber);
+                            }
+                            if (type === "mc") {
+                              return renderMultipleChoice(q, questionNumber);
+                            }
+                            if (type === "writing") {
+                              return renderWriting(q, questionNumber);
+                            }
+                            return null;
+                          })}
                     </ListGroup>
                   </Card.Body>
                 </Card>
@@ -293,13 +432,18 @@ const QuestionDetail = () => {
           <Button
             onClick={async () => {
               try {
+                console.log(deleted);
                 await teacherService.deleteListQuestionByQuestionType(
                   deleted.id
                 );
                 if (deleted.readingId != null) {
                   await teacherService.deleteReadingPassage(deleted.readingId);
                 }
-
+                if (deleted.listeningId != null) {
+                  await teacherService.deletedListeningPassage(
+                    deleted.listeningId
+                  );
+                }
                 toast.success("Xóa thành công");
 
                 setRender(!render);
@@ -319,6 +463,7 @@ const QuestionDetail = () => {
           show={showEdit}
           item={editingGroup}
           setShowEdit={setShowEdit}
+          speak={speak}
           onSave={() => setRender(!render)}
         ></EditQuestionModal>
       )}

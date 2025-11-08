@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Form, Spinner, Row, Col, Badge } from "react-bootstrap";
+import {
+  Modal,
+  Button,
+  Form,
+  Spinner,
+  Row,
+  Col,
+  Badge,
+  Card,
+} from "react-bootstrap";
 import { toast, ToastContainer } from "react-toastify";
 import teacherService from "../services/TeacherSerivceApi";
 import { Plus, Trash3 } from "react-bootstrap-icons";
 
-const EditQuestionModal = ({ show, item, setShowEdit, onSave }) => {
+const EditQuestionModal = ({ show, item, setShowEdit, onSave, speak }) => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState(null);
@@ -29,6 +38,10 @@ const EditQuestionModal = ({ show, item, setShowEdit, onSave }) => {
           readingTitle: response.readingDto?.title || "",
           readingContent: response.readingDto?.passageContent || "",
           readingId: response.readingDto?.id || "",
+          listeningPassageId: response.listeningPassageDto?.id || "",
+          listeningScript: response.listeningPassageDto?.scriptText || "",
+          listeningType: response.listeningPassageDto?.passage_type || "short",
+          listeningTitle: response.listeningPassageDto?.title || "",
         });
       } catch (err) {
         toast.error("Lấy dữ liệu thất bại!");
@@ -37,10 +50,10 @@ const EditQuestionModal = ({ show, item, setShowEdit, onSave }) => {
         setLoading(false);
       }
     };
-
+    console.log(form);
     fetchData();
   }, [item]);
-
+  const isLong = form?.listeningType == "long";
   if (loading || !form) {
     return (
       <Modal show={show} centered backdrop="static" keyboard={false}>
@@ -149,20 +162,31 @@ const EditQuestionModal = ({ show, item, setShowEdit, onSave }) => {
       toast.error("Vui lòng điền đầy đủ tên part");
       return;
     }
-    console.log(form.name);
 
     if (
       form.questions.some((q) => {
         if (!q.questionText) return true;
-        if (form.type == "fill") {
+        if (
+          form.type == "fill" ||
+          (form.listeningType == "short" && form.type == "listening")
+        ) {
           if (!q.correctAnswer) return true;
         }
-        if (form.type == "mc" || form.type == "reading") {
+        if (
+          form.type == "listening" &&
+          form.listeningType == "short" &&
+          !q.listeningText
+        ) {
+          console.log("Loi do listening");
+          return true;
+        }
+        if (form.type == "mc" || form.type == "reading" || isLong) {
           const hasCorrectOption = q.options.some((item) => item.correctAnswer);
+          const hasNullOption = q.options.some((item) => item.optionText == "");
           if (q.options.length < 2) {
             return true;
           }
-          if (!hasCorrectOption) {
+          if (!hasCorrectOption || hasNullOption) {
             return true;
           }
         }
@@ -172,8 +196,17 @@ const EditQuestionModal = ({ show, item, setShowEdit, onSave }) => {
       return;
     }
 
+    if (isLong && !form.listeningScript.trim()) {
+      toast.error("Vui lòng điền đầy đủ thông tin đoạn nghe.");
+      return;
+    }
+
+    if (form.questions.length == 0) {
+      toast.error("Môi part phải có ít nhất một câu hỏi");
+      return;
+    }
     if (form.type == "reading") {
-      if (!form.readingContent || !form.readingTitle) {
+      if (!form.readingContent.trim() || !form.readingTitle.trim()) {
         toast.error("Vui lòng điền đầy đủ thông tin reading");
         return;
       }
@@ -192,6 +225,7 @@ const EditQuestionModal = ({ show, item, setShowEdit, onSave }) => {
             questionText: q.questionText,
             correctAnswer: q.correctAnswer || "",
             options: q.options || null,
+            listeningText: q.listeningText,
           })),
         },
         readingDto:
@@ -200,6 +234,15 @@ const EditQuestionModal = ({ show, item, setShowEdit, onSave }) => {
                 id: form.readingId,
                 title: form.readingTitle,
                 passageContent: form.readingContent,
+              }
+            : null,
+        listeningPassageDto:
+          form.type === "listening"
+            ? {
+                id: form.listeningPassageId || null,
+                scriptText: form.listeningScript,
+                passage_type: form.listeningType,
+                title: form.listeningTitle || null,
               }
             : null,
       };
@@ -257,10 +300,51 @@ const EditQuestionModal = ({ show, item, setShowEdit, onSave }) => {
                 <option value="fill">Fill in the blank</option>
                 <option value="reading">Reading</option>
                 <option value="writing">Writing</option>
+                <option value="listening">Litening</option>
               </Form.Select>
             </Col>
           </Row>
+          {form.type === "listening" && form.listeningType == "long" && (
+            <div className="border rounded p-4 bg-light mb-4">
+              <h5>
+                Listening Script
+                <Badge
+                  bg={form.listeningType === "long" ? "primary" : "success"}
+                  className="ms-2"
+                >
+                  {form.listeningType}
+                </Badge>
+              </h5>
 
+              <Form.Group className="mb-3">
+                <Form.Label>Tiêu đề (nếu có)</Form.Label>
+                <Form.Control
+                  value={form.listeningTitle}
+                  onChange={(e) =>
+                    setForm({ ...form, listeningTitle: e.target.value })
+                  }
+                  placeholder="Ví dụ: Conversation between manager and employee..."
+                />
+              </Form.Group>
+
+              <Form.Group>
+                <Form.Label>Nội dung script</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={form.listeningType === "long" ? 10 : 2}
+                  value={form.listeningScript}
+                  onChange={(e) =>
+                    setForm({ ...form, listeningScript: e.target.value })
+                  }
+                  placeholder={
+                    form.listeningType === "long"
+                      ? "Good morning, everyone. Our new marketing campaign..."
+                      : "Employees should submit their forms on the third floor."
+                  }
+                />
+              </Form.Group>
+            </div>
+          )}
           {isReading && (
             <div className="border rounded p-4 bg-light mb-4">
               <h5>Đoạn văn Reading</h5>
@@ -315,6 +399,35 @@ const EditQuestionModal = ({ show, item, setShowEdit, onSave }) => {
                     <Trash3 />
                   </Button>
                 </div>
+                {form.listeningType == "short" && form.type == "listening" && (
+                  <Card className="mb-3 border-info bg-light-info">
+                    <Card.Body className="p-3">
+                      <Form.Group>
+                        <Form.Label className="fw-bold text-info d-flex align-items-center mb-1">
+                          <i
+                            className="bi bi-headphones me-2"
+                            onClick={() => speak(q.listeningText, "en-US", 1)}
+                          ></i>
+                          Nội dung Script Nghe (Listening Context)
+                        </Form.Label>
+                        <Form.Control
+                          as="textarea"
+                          rows={3}
+                          value={q.listeningText || ""}
+                          onChange={(e) =>
+                            updateQuestion(
+                              qIdx,
+                              "listeningText",
+                              e.target.value
+                            )
+                          }
+                          className="border-info bg-white"
+                          style={{ fontSize: "0.95rem" }}
+                        />
+                      </Form.Group>
+                    </Card.Body>
+                  </Card>
+                )}
                 <Form.Control
                   as="textarea"
                   rows={3}
@@ -325,7 +438,7 @@ const EditQuestionModal = ({ show, item, setShowEdit, onSave }) => {
                 />
               </Form.Group>
 
-              {isReading || isMc ? (
+              {isReading || isMc || form.listeningType == "long" ? (
                 <div>
                   <div className="d-flex justify-content-between">
                     <Form.Label className="fw-bold">
