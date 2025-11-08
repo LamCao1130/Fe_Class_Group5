@@ -110,5 +110,31 @@ let teacherService = {
     );
     return res.data;
   },
+  createGrammar: async (data) => {
+    let res = await axiosApi.post(
+      `http://localhost:8080/api/v1/grammar/create`,
+      data
+    );
+    return res.data;
+  },
+  updateGrammar: async (data) => {
+    let res = await axiosApi.put(
+      `http://localhost:8080/api/v1/grammar/update`,
+      data
+    );
+    return res.data;
+  },
+  deleteGrammar: async (id) => {
+    let res = await axiosApi.delete(
+      `http://localhost:8080/api/v1/grammar/delete/${id}`
+    );
+    return res.data;
+  },
+  getGrammar: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/grammar/get/${id}`
+    );
+    return res.data;
+  },
 };
 export default teacherService;

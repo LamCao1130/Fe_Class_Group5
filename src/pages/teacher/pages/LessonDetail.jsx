@@ -9,19 +9,37 @@ import {
   ListGroup,
   Nav,
   Navbar,
+  ToastContainer,
 } from "react-bootstrap";
 import VocabDetail from "../components/VocabDetail";
 import GrammarDetail from "../components/GrammarDetail";
 import QuestionDetail from "../components/QuestionDetail";
+import AddGrammarModal from "../components/AddGrammarModal";
+import { toast } from "react-toastify";
 
 const LessonDetail = () => {
   const { id } = useParams();
 
   const [activeTab, setActiveTab] = useState("vocab");
 
+  const [showAddGrammar, setShowAddGrammar] = useState(false);
+
   const navigate = useNavigate();
 
   const [questionList, setQuestionList] = useState([]);
+  const [message, setMessage] = useState({
+    message: "",
+    type: "",
+  });
+  useEffect(() => {
+    if (message.message && toast[message.type]) {
+      const normalizedType = message.type.toLowerCase();
+
+      toast[normalizedType](message.message);
+
+      setMessage({ message: "", type: "" });
+    }
+  }, [message]);
 
   return (
     <>
@@ -69,6 +87,11 @@ const LessonDetail = () => {
 
       <Container>
         <>
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+          ></ToastContainer>
+
           <div className="d-flex justify-content-end mb-4">
             {activeTab != "question" ? (
               <Dropdown>
@@ -94,15 +117,7 @@ const LessonDetail = () => {
                 </Dropdown.Menu>
               </Dropdown>
             ) : (
-              <Dropdown>
-                <Dropdown.Toggle
-                  onClick={() => navigate(`/teacher/lesson/${id}/addQuestion`)}
-                  variant="success"
-                  className="shadow-sm"
-                >
-                  Thêm mới
-                </Dropdown.Toggle>
-              </Dropdown>
+              ""
             )}
           </div>
           {activeTab === "vocab" && <VocabDetail id={id} />}
@@ -142,6 +157,12 @@ const LessonDetail = () => {
             </Card.Body>
           </Card>
         </>
+        <AddGrammarModal
+          type={"Thêm mới"}
+          setMessage={setMessage}
+          showGrammar={showAddGrammar}
+          handleClose={() => setShowAddGrammar(false)}
+        ></AddGrammarModal>
       </Container>
     </>
   );
