@@ -1,3 +1,4 @@
+import { da } from "zod/v4/locales";
 import axiosApi from "../../../components/AxiosApi";
 
 let studentApi = {
@@ -18,6 +19,32 @@ let studentApi = {
   getLessonListApi: async (classRoomId) => {
     let res = await axiosApi.get(
       `http://localhost:8080/api/v1/lessons/get-by-classRoomId/${classRoomId}`
+    );
+    return res.data;
+  },
+  getVocabList: async (lessonId) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/vocab/lesson/${lessonId}`
+    );
+    return res.data;
+  },
+  getDetailLesson: async (lessonId) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/lessons/get-detail/${lessonId}`
+    );
+    return res.data;
+  },
+  getListQuestionType: async (datas) => {
+    let res = await axiosApi.post(
+      `http://localhost:8080/api/v1/question-type/get-by-type`,
+      datas
+    );
+    return res.data;
+  },
+  getListFailOption: async (datas) => {
+    let res = await axiosApi.post(
+      `http://localhost:8080/api/v1/Question/check-answer`,
+      datas
     );
     return res.data;
   },

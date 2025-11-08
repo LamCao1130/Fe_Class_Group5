@@ -28,6 +28,10 @@ import AddQuestion from "../pages/teacher/pages/AddQuestion";
 import LessonList from "../pages/student/pages/LessonList";
 import ExamList from "../pages/student/pages/ExamList";
 import ViewVocab from "../pages/student/pages/ViewVocab";
+import Vocabulary from "../pages/student/components/Vocabulary";
+import Reading from "../pages/student/components/Reading";
+import Listening from "../pages/student/components/Listening";
+import Writting from "../pages/student/components/Writting";
 let router = createBrowserRouter([
   {
     path: "/fail403",
@@ -100,6 +104,38 @@ let router = createBrowserRouter([
       { path: "classroom/:classRoomId/exam", element: <ExamList /> },
       { path: "vocab/:lessionId", element: <ViewVocab /> },
     ],
+  },
+  {
+    path: "/student/doExercise/:lessonId/mcAndFill",
+    element: (
+      <StudentProtectRouter>
+        <Vocabulary />
+      </StudentProtectRouter>
+    ),
+  },
+  {
+    path: "/student/doExercise/:lessonId/reading",
+    element: (
+      <StudentProtectRouter>
+        <Reading />
+      </StudentProtectRouter>
+    ),
+  },
+  {
+    path: "/student/doExercise/:lessonId/listening",
+    element: (
+      <StudentProtectRouter>
+        <Listening />
+      </StudentProtectRouter>
+    ),
+  },
+  {
+    path: "/student/doExercise/:lessonId/writting",
+    element: (
+      <StudentProtectRouter>
+        <Writting />
+      </StudentProtectRouter>
+    ),
   },
   {
     path: "/admin",
