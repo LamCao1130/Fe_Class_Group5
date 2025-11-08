@@ -79,6 +79,11 @@ let teacherService = {
     );
     return res.data;
   },
+  deletedListeningPassage: async (id) => {
+    let res = await axiosApi.delete(
+      `http://localhost:8080/api/v1/Question/delete/listening/${id}`
+    );
+  },
   deleteReadingPassage: async (id) => {
     let res = await axiosApi.delete(
       `http://localhost:8080/api/v1/Question/delete/reading/${id}`

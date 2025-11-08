@@ -31,6 +31,11 @@ const AddQuestion = () => {
     title: "",
     passageContent: "",
   });
+  const [listening, setListening] = useState({
+    scriptText: "",
+    title: "",
+    passage_type: "long",
+  });
   const [questions, setQuestions] = useState([
     {
       text: "",
@@ -48,6 +53,7 @@ const AddQuestion = () => {
         fillAnswer: "",
         mcOptions: [""],
         correctAnswers: [],
+        listeningText: "",
       },
     ]);
   };
@@ -65,6 +71,17 @@ const AddQuestion = () => {
       questions.map((q, idx) => (idx === qIndex ? { ...q, text: value } : q))
     );
   };
+  const updateListeningText = (qIndex, value) => {
+    setQuestions(
+      questions.map((q, idx) =>
+        idx === qIndex ? { ...q, listeningText: value } : q
+      )
+    );
+  };
+  const shouldShowOptions =
+    partType === "mc" ||
+    partType === "reading" ||
+    (partType === "listening" && listening.passage_type === "long");
 
   const updateFillAnswer = (qIndex, value) => {
     setQuestions(
@@ -140,7 +157,14 @@ const AddQuestion = () => {
       toast.error("Vui lòng điền đầy đủ thông tin đoạn reading");
       return;
     }
-
+    if (
+      partType == "listening" &&
+      listening.passage_type == "long" &&
+      !listening.scriptText
+    ) {
+      toast.error("Vui lòng điền đầy đủ thông tin đoạn listening");
+      return;
+    }
     const validQuestions = questions
       .map((q) => {
         if (!q.text.trim()) return null;
@@ -155,6 +179,18 @@ const AddQuestion = () => {
           };
         }
 
+        if (partType === "listening") {
+          if (listening.passage_type == "short") {
+            if (!q.fillAnswer.trim() || !q.listeningText.trim()) return null;
+            return {
+              questionText: q.text,
+              type: partType,
+              listeningText: q.listeningText,
+              correctAnswer: q.fillAnswer.trim(),
+              lessonId: lessonId.id,
+            };
+          }
+        }
         if (partType == "writing") {
           return {
             questionText: q.text,
@@ -164,14 +200,27 @@ const AddQuestion = () => {
           };
         }
 
-        if (partType === "mc" || partType == "reading") {
+        if (
+          partType === "mc" ||
+          partType == "reading" ||
+          (partType == "listening" && listening.passage_type == "long")
+        ) {
           const filledOptions = q.mcOptions.map((o, index) => {
-            return {
-              optionText: o.trim(),
-              correctAnswer: q.correctAnswers.includes(index),
-            };
+            if (o.trim() != "") {
+              return {
+                optionText: o.trim(),
+                correctAnswer: q.correctAnswers.includes(index),
+              };
+            } else {
+              return null;
+            }
           });
-          if (filledOptions.length < 2 || q.correctAnswers.length === 0)
+          if (
+            !q.mcOptions ||
+            filledOptions.length < 2 ||
+            q.correctAnswers.length === 0 ||
+            filledOptions.some((o) => o == null)
+          )
             return null;
           return {
             questionText: q.text,
@@ -187,7 +236,7 @@ const AddQuestion = () => {
         };
       })
       .filter(Boolean);
-    if (validQuestions.length === 0) {
+    if (validQuestions.length != questions.length) {
       toast.error("Vui lòng điền đầy đủ thông tin question hợp lệ");
       return;
     }
@@ -200,6 +249,7 @@ const AddQuestion = () => {
         questions: validQuestions,
       },
       readingDto: partType == "reading" ? reading : null,
+      listeningPassageDto: partType == "listening" ? listening : null,
     };
 
     console.log(createQuestion);
@@ -210,7 +260,6 @@ const AddQuestion = () => {
     }, 300);
     setPartTitle("");
     setPartType("fill");
-    setReadingPassage("");
     setQuestions([
       { text: "", fillAnswer: "", mcOptions: [""], correctAnswers: [] },
     ]);
@@ -283,6 +332,63 @@ const AddQuestion = () => {
                   </Form.Select>
                 </Form.Group>
 
+                {partType == "listening" && (
+                  <Form.Group className="mb-4">
+                    <Form.Label className="fw-bold">Loại Bài Nghe</Form.Label>
+                    <Form.Select
+                      value={listening.passage_type}
+                      onChange={(e) => {
+                        setListening({
+                          scriptText: "",
+                          passage_type: e.target.value,
+                        });
+                        setQuestions(
+                          questions.map((q) => ({
+                            ...q,
+                            fillAnswer: "",
+                            mcOptions: [""],
+                            correctAnswers: [],
+                          }))
+                        );
+                      }}
+                    >
+                      <option key={"long"} value={"long"}>
+                        Bài Nghe Đoạn Dài (Multi-Question)
+                      </option>
+                      <option key={"short"} value={"short"}>
+                        Nghe & Điền Câu Đơn (Sentence Fill){" "}
+                      </option>
+                    </Form.Select>
+                  </Form.Group>
+                )}
+                {partType === "listening" &&
+                  listening.passage_type == "long" && (
+                    <Card className="mb-4 border-primary">
+                      <Card.Header className="bg-primary text-white">
+                        <strong>🎧 Bài Nghe Đoạn Dài (Long Passage)</strong>
+                      </Card.Header>
+                      <Card.Body>
+                        <Form.Group>
+                          <Form.Label>
+                            <strong>Nội dung Script/Lời thoại</strong>
+                          </Form.Label>
+                          <Form.Control
+                            as="textarea"
+                            rows={8}
+                            placeholder="Dán toàn bộ lời thoại của bài nghe vào đây..."
+                            value={listening.scriptText}
+                            onChange={(e) =>
+                              setListening({
+                                ...listening,
+                                scriptText: e.target.value,
+                              })
+                            }
+                            className="font-monospace small"
+                          />
+                        </Form.Group>
+                      </Card.Body>
+                    </Card>
+                  )}
                 {partType === "reading" && (
                   <Card className="mb-4 border-warning">
                     <Card.Header className="bg-warning text-dark">
@@ -342,22 +448,71 @@ const AddQuestion = () => {
                       </Button>
                     </Card.Header>
                     <Card.Body>
-                      <Form.Group className="mb-3">
-                        <Form.Label>Nội dung câu hỏi</Form.Label>
-                        <Form.Control
-                          as="textarea"
-                          rows={2}
-                          placeholder={
-                            partType === "fill"
-                              ? "VD: The capital of Vietnam is _____."
-                              : ""
-                          }
-                          value={q.text}
-                          onChange={(e) =>
-                            updateQuestionText(qIndex, e.target.value)
-                          }
-                        />
-                      </Form.Group>
+                      {partType == "listening" &&
+                      listening.passage_type == "short" ? (
+                        <Form.Group className="mb-3">
+                          <Form.Label className="text-secondary fw-bold">
+                            Script Ngắn (Câu Nghe)
+                          </Form.Label>
+                          <Form.Control
+                            as="textarea"
+                            rows={2}
+                            placeholder="Nhập câu/đoạn Script ngắn cho câu hỏi này..."
+                            value={q.listeningText}
+                            onChange={(e) =>
+                              updateListeningText(qIndex, e.target.value)
+                            }
+                            className="border-secondary mb-3"
+                          />
+
+                          <Form.Label className="text-primary fw-bold">
+                            Nội dung Câu hỏi (Hiển thị cho học sinh)
+                          </Form.Label>
+                          <Form.Control
+                            as="textarea"
+                            rows={2}
+                            placeholder="Nhập câu hỏi mà học sinh sẽ thấy (ví dụ: What is the capital of Vietnam?)..."
+                            value={q.text}
+                            onChange={(e) =>
+                              updateQuestionText(qIndex, e.target.value)
+                            }
+                            className="border-primary mb-3"
+                          />
+
+                          <Form.Label className="text-success fw-bold">
+                            Đáp án Điền Vào Chỗ Trống
+                          </Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="VD: Hanoi"
+                            value={q.fillAnswer}
+                            onChange={(e) =>
+                              updateFillAnswer(qIndex, e.target.value)
+                            }
+                            className="border-success"
+                          />
+                          <Form.Text className="text-muted">
+                            Nhập chính xác đáp án mà học sinh phải điền.
+                          </Form.Text>
+                        </Form.Group>
+                      ) : (
+                        <Form.Group className="mb-3">
+                          <Form.Label>Nội dung câu hỏi</Form.Label>
+                          <Form.Control
+                            as="textarea"
+                            rows={2}
+                            placeholder={
+                              partType === "fill"
+                                ? "VD: The capital of Vietnam is _____."
+                                : ""
+                            }
+                            value={q.text}
+                            onChange={(e) =>
+                              updateQuestionText(qIndex, e.target.value)
+                            }
+                          />
+                        </Form.Group>
+                      )}
 
                       {partType === "fill" && (
                         <Form.Group className="mb-3">
@@ -379,7 +534,7 @@ const AddQuestion = () => {
                         </Form.Group>
                       )}
 
-                      {partType != "fill" && partType != "writing" && (
+                      {shouldShowOptions && (
                         <div className="border p-3 rounded bg-light">
                           <div className="d-flex justify-content-between align-items-center mb-3">
                             <Form.Label className="fw-bold text-primary mb-0">
