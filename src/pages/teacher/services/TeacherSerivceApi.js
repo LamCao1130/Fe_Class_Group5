@@ -104,7 +104,7 @@ let teacherService = {
     return res.data;
   },
   createLesson: async (data) => {
-    let res = await axiosApi.put(
+    let res = await axiosApi.post(
       `http://localhost:8080/api/v1/lessons/create`,
       data
     );
