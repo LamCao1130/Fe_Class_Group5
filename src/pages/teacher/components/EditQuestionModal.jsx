@@ -122,7 +122,7 @@ const EditQuestionModal = ({ show, item, setShowEdit, onSave, speak }) => {
           ? q
           : {
               ...q,
-              options: [...q.options, { optionText: "", correctAnswer: "" }],
+              options: [...q.options, { optionText: "", correctAnswer: "0" }],
             }
       ),
     }));
