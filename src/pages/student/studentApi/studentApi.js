@@ -48,5 +48,17 @@ let studentApi = {
     );
     return res.data;
   },
+  getSubmissionHistory: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/Question/history/${id}`
+    );
+    return res.data;
+  },
+  getFailAnswer: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/Question/result/fail/${id}`
+    );
+    return res.data;
+  },
 };
 export default studentApi;
