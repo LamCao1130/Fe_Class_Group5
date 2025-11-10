@@ -41,22 +41,16 @@ let studentApi = {
     );
     return res.data;
   },
-  getListFailOption: async (datas) => {
+  getListFailOptionVocab: async (datas, id) => {
     let res = await axiosApi.post(
-      `http://localhost:8080/api/v1/Question/check-answer`,
+      `http://localhost:8080/api/v1/Question/check-answer-vocab/${id}`,
       datas
     );
     return res.data;
   },
-  getSubmissionHistory: async (id) => {
+  getListListeningByLessonId: async (id) => {
     let res = await axiosApi.get(
-      `http://localhost:8080/api/v1/Question/history/${id}`
-    );
-    return res.data;
-  },
-  getFailAnswer: async (id) => {
-    let res = await axiosApi.get(
-      `http://localhost:8080/api/v1/Question/result/fail/${id}`
+      `http://localhost:8080/api/v1/Question/listening/${id}`
     );
     return res.data;
   },
