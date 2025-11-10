@@ -60,7 +60,6 @@ const ClassRooms = () => {
         (c.code ?? '').toLowerCase().includes(searchTerm.toLowerCase())
     )
 
-    // --- CRUD handlers ---
     const handleAdd = () => {
         setIsEdit(false)
         reset()
