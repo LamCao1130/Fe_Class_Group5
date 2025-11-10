@@ -32,6 +32,7 @@ import Vocabulary from "../pages/student/components/Vocabulary";
 import Reading from "../pages/student/components/Reading";
 import Listening from "../pages/student/components/Listening";
 import Writting from "../pages/student/components/Writting";
+import SubmissionHistory from "../pages/student/pages/SubmitionHistory";
 let router = createBrowserRouter([
   {
     path: "/fail403",
@@ -98,11 +99,16 @@ let router = createBrowserRouter([
     ),
     children: [
       // { path: "homepage", element: <HomePageStudent /> },
+
       { path: "classroom", element: <ClassRoomList /> },
       { path: "profileStudent", element: <ProfilePage /> },
       { path: "classroom/:classRoomId", element: <LessonList /> },
       { path: "classroom/:classRoomId/exam", element: <ExamList /> },
       { path: "vocab/:lessionId", element: <ViewVocab /> },
+      {
+        path: "history/:lessionId",
+        element: <SubmissionHistory></SubmissionHistory>,
+      },
     ],
   },
   {
