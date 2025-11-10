@@ -115,10 +115,7 @@ const VocabDetail = ({ id }) => {
           </Button>
         </Modal.Footer>
       </Modal>
-      <AddGrammarModal
-        showGrammar={showAddGrammar}
-        handleClose={() => setShowAddGrammar(false)}
-      ></AddGrammarModal>
+
       <EditVocabModal
         show={showEdit}
         setShowEdit={setShowEdit}

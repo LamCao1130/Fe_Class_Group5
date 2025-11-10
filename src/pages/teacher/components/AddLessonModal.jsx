@@ -1,12 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, FloatingLabel, Form, Modal } from "react-bootstrap";
-
+import { useParams } from "react-router";
+import { toast, ToastContainer } from "react-toastify";
+import teacherService from "../services/TeacherSerivceApi";
+const initialRowDefault = {
+  classRoomId: "",
+  title: "",
+  description: "",
+  content: "",
+  homeworkDeadline: "",
+  homeworkAttachmentUrl: "",
+};
 const AddLessonModal = ({ show, handleClose }) => {
-  const handleSubmit = () => {
+  const { id } = useParams();
+  const [form, setForm] = useState({ ...initialRowDefault });
+  const handleChange = (name, value) => {
+    setForm({ ...form, [name]: value });
+  };
+  const handleSubmit = async () => {
+    if (
+      form.title.trim() == "" ||
+      form.description.trim() == "" ||
+      form.homeworkDeadline == ""
+    ) {
+      toast.error("Vui lòng điền đầy đủ thông tin các trường");
+      return;
+    }
+    setForm({ ...form, classRoomId: id });
+    await teacherService.createLesson(form);
+    setForm({ ...initialRowDefault });
+    toast.success("Lưu thành công");
     handleClose();
   };
   return (
     <div>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+      />
       <Modal show={show} onHide={handleClose} animation={false}>
         <Modal.Header closeButton>
           <Modal.Title>Tạo Bài Học</Modal.Title>
@@ -22,7 +54,13 @@ const AddLessonModal = ({ show, handleClose }) => {
                 label="Tiêu đề bài học"
                 className="m-a"
               >
-                <Form.Control type="text" placeholder="Nhập tiêu đề" />
+                <Form.Control
+                  value={form.title}
+                  name="title"
+                  onChange={(e) => handleChange(e.target.name, e.target.value)}
+                  type="text"
+                  placeholder="Nhập tiêu đề"
+                />
               </FloatingLabel>
             </Form.Group>
 
@@ -35,40 +73,13 @@ const AddLessonModal = ({ show, handleClose }) => {
                 label="Mô tả ngắn gọn"
                 className="m-a"
               >
-                <Form.Control as="textarea" rows={2} placeholder="Nhập mô tả" />
-              </FloatingLabel>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="Instruction">
-              <Form.Label>
-                <strong>Hướng dẫn Bài tập</strong>
-              </Form.Label>
-              <FloatingLabel
-                controlId="Instruction"
-                label="Hướng dẫn chi tiết bài tập"
-                className="m-a"
-              >
                 <Form.Control
+                  value={form.description}
+                  name="description"
+                  onChange={(e) => handleChange(e.target.name, e.target.value)}
                   as="textarea"
-                  rows={3}
-                  placeholder="Nhập hướng dẫn"
-                />
-              </FloatingLabel>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="Max score">
-              <Form.Label>
-                <strong>Điểm tối đa</strong>
-              </Form.Label>
-              <FloatingLabel
-                controlId="Max score"
-                label="Điểm tối đa"
-                className="m-a"
-              >
-                <Form.Control
-                  min={"1"}
-                  type="number"
-                  placeholder="Nhập điểm tối đa"
+                  rows={2}
+                  placeholder="Nhập mô tả"
                 />
               </FloatingLabel>
             </Form.Group>
@@ -83,6 +94,9 @@ const AddLessonModal = ({ show, handleClose }) => {
                 className="m-a"
               >
                 <Form.Control
+                  value={form.homeworkDeadline}
+                  name="homeworkDeadline"
+                  onChange={(e) => handleChange(e.target.name, e.target.value)}
                   type="datetime-local"
                   placeholder="Chọn hạn nộp"
                 />
@@ -93,7 +107,12 @@ const AddLessonModal = ({ show, handleClose }) => {
               <Form.Label>
                 <strong>File đính kèm</strong>
               </Form.Label>
-              <Form.Control type="file" />
+              <Form.Control
+                value={form.homeworkAttachmentUrl}
+                name="homeworkAttachmentUrl"
+                onChange={(e) => handleChange(e.target.name, e.target.value)}
+                as="textarea"
+              />
             </Form.Group>
           </Form>
         </Modal.Body>

@@ -1,9 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card } from "react-bootstrap";
+import { Button, Card, Modal } from "react-bootstrap";
 import teacherService from "../services/TeacherSerivceApi";
+import { toast, ToastContainer } from "react-toastify";
+import AddGrammarModal from "./AddGrammarModal";
 
 const GrammarDetail = ({ id }) => {
   const [grammarList, setGrammarList] = useState([]);
+  const [deleted, setDetleted] = useState();
+  const [showDelted, setShowDeleted] = useState(false);
+  const [render, setRender] = useState(false);
+  const [showEditGrammar, setshowEditGrammar] = useState(false);
+  const [update, setUpdate] = useState();
+  const [message, setMessage] = useState({
+    message: "",
+    type: "",
+  });
   useEffect(() => {
     async function fetchListGrammar() {
       teacherService
@@ -11,9 +22,22 @@ const GrammarDetail = ({ id }) => {
         .then((data) => setGrammarList(data));
     }
     fetchListGrammar();
-  }, []);
+  }, [render]);
+  const handleDelete = async (g) => {
+    setShowDeleted(true);
+    setDetleted(g);
+  };
+
+  const handleUpdate = (i) => {
+    console.log(i);
+    setUpdate(i);
+    setshowEditGrammar(true);
+  };
+
   return (
     <div>
+      <ToastContainer position="top-right" autoClose={3000}></ToastContainer>
+
       <Card className={`mb-4 shadow-sm border-0 `}>
         <Card.Header className="bg-success text-white">
           <strong>Grammar ({grammarList.length})</strong>
@@ -26,9 +50,23 @@ const GrammarDetail = ({ id }) => {
                   <strong>
                     {index + 1}. {g.title}
                   </strong>
-                  <Button size="sm" variant="outline-light">
-                    <i class="bi bi-trash"></i>
-                  </Button>
+                  <div>
+                    <Button
+                      className="me-4"
+                      size="sm"
+                      variant="outline-light"
+                      onClick={() => handleDelete(g)}
+                    >
+                      <i class="bi bi-trash"></i>
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline-light"
+                      onClick={() => handleUpdate(g.id)}
+                    >
+                      <i class="bi bi-pencil"></i>
+                    </Button>
+                  </div>
                 </Card.Header>
 
                 <Card.Body>
@@ -82,6 +120,40 @@ const GrammarDetail = ({ id }) => {
           )}
         </Card.Body>
       </Card>
+      <Modal show={showDelted} handleClose={() => setShowDeleted(false)}>
+        <Modal.Body>
+          <p>Do you want to delete {deleted?.title}.</p>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button onClick={() => setShowDeleted(false)} variant="secondary">
+            Close
+          </Button>
+          <Button
+            onClick={async () => {
+              try {
+                await teacherService.deleteGrammar(deleted?.id);
+                toast.success("Xóa thành công");
+                setRender(!render);
+                setShowDeleted(false);
+              } catch (error) {
+                toast.error("Lỗi khi xóa ngữ pháp", error);
+              }
+            }}
+            variant="danger"
+          >
+            Deleted{" "}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <AddGrammarModal
+        showGrammar={showEditGrammar}
+        type={"Chỉnh sửa"}
+        update={update}
+        handleClose={() => setshowEditGrammar(false)}
+        onSave={() => setRender(!render)}
+      ></AddGrammarModal>
     </div>
   );
 };
