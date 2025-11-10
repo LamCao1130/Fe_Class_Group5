@@ -48,9 +48,29 @@ let studentApi = {
     );
     return res.data;
   },
+  getListFailOptionListen: async (datas, id) => {
+    let res = await axiosApi.post(
+      `http://localhost:8080/api/v1/Question/check-answer-listening/${id}`,
+      datas
+    );
+    return res.data;
+  },
+  getListFailOptionReading: async (datas, id) => {
+    let res = await axiosApi.post(
+      `http://localhost:8080/api/v1/Question/check-answer-reading/${id}`,
+      datas
+    );
+    return res.data;
+  },
   getListListeningByLessonId: async (id) => {
     let res = await axiosApi.get(
       `http://localhost:8080/api/v1/Question/listening/${id}`
+    );
+    return res.data;
+  },
+  getListReadingByLessonId: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/Question/reading/${id}`
     );
     return res.data;
   },
