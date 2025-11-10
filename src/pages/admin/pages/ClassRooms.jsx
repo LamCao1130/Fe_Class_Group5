@@ -2,14 +2,20 @@ import { use, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Container, Row, Col, Card, Table, Button, InputGroup, Form, Pagination, Badge, Modal } from 'react-bootstrap'
 import { toast, ToastContainer } from 'react-toastify'
+import { Typeahead } from 'react-bootstrap-typeahead'
 import { Edit, Trash2, Plus, Search, RefreshCcw } from 'lucide-react'
 import { adminApi } from '../../../components/api/adminApi'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 
+
+
+
 const ClassRooms = () => {
     const [classRooms, setClassRooms] = useState([])
+    const [teachers, setTeachers] = useState([])
+    const [selectedTeacher, setSelectedTeacher] = useState([])
     const [searchTerm, setSearchTerm] = useState('')
     const [page, setPage] = useState(0)
     const [size, setSize] = useState(10)
@@ -22,21 +28,17 @@ const ClassRooms = () => {
 
     const classroomSchema = z.object({
         name: z.string()
-        .min(1, {message: "Please input class name"}),
+            .min(1, { message: "Please input class name" }),
         title: z.string()
-        .min(1, {message: "Please input class title"}),
-        code: z.string()
-        .min(1, {message: "Please input class code"})
-        .regex(/^[A-Z0-9]+$/,{message: "Code only containt Numer and Alphabet"}),
-        teacherId: z.number({message: "Please choose one teacher"}),
+            .min(1, { message: "Please input class title" }),
+        teacherId: z.number({ message: "Please choose one teacher" }),
     });
 
-    const { register, handleSubmit, reset, formState: { erros, isSubmitting } } = useForm({
+    const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm({
         resolver: zodResolver(classroomSchema),
         defaultValues: {
             name: '',
             title: '',
-            code: '',
             teacherId: '',
         }
     })
@@ -55,63 +57,106 @@ const ClassRooms = () => {
         fetchData();
     }, [page, size])
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await adminApi.getAllTeacherAccount(0, 100);
+                setTeachers(res.content);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        fetchData();
+    }, [])
+
     const filteredClasses = classRooms.filter(c =>
         (c.name ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
         (c.code ?? '').toLowerCase().includes(searchTerm.toLowerCase())
     )
 
     const handleAdd = () => {
-        setIsEdit(false)
-        reset()
-        setLgShow(true)
+        setIsEdit(false);
+        reset({
+            name: '',
+            title: '',
+            teacherId: '',
+        });
+        setLgShow(true);
+        setSelectedTeacher([]);
     }
 
     const handleEdit = (id) => {
         const c = classRooms.find(cls => cls.id === id)
-        reset({ className: c.className, description: c.description, teacherId: c.teacherId })
-        setSelectedClassId(id)
+        reset({
+            name: c.name,
+            title: c.title,
+            teacherId: c.teacherId
+        })
+        const t = teachers.find(t => t.id === c.teacherId)
+        setSelectedTeacher(t ? [t] : [])
         setIsEdit(true)
         setLgShow(true)
+        setSelectedClassId(id)
     }
 
     const handleDelete = async (id) => {
-        if (!window.confirm("Are you sure to delete this class?")) return
+        if (!window.confirm("Are you sure to deactivate this class?")) return
         try {
-            await adminApi.deleteClassRoom(id)
-            toast.success("Class deleted")
-            const res = await adminApi.getAllClassRooms(page, size)
-            setClassRooms(res.content)
+            const res = await adminApi.deleteClassRoom(id);
+            setClassRooms(prev =>
+                prev.map(c =>
+                    c.id === id ? { ...c, ...res } : c
+                )
+            );
+            toast.success("Deactivate class success")
+
         } catch (err) {
-            toast.error("Failed to delete class")
+            console.error(err);
+            const errorMessage = "Failed to deactivate class";
+            toast.error(err.response.data?.message || errorMessage);
         }
     }
 
     const handleRestore = async (id) => {
-        if (!window.confirm("Restore this class?")) return
+        if (!window.confirm("Are you sure to active this class?")) return
         try {
-            await adminApi.restoreClassRoom(id)
-            toast.success("Class restored")
-            const res = await adminApi.getAllClassRooms(page, size)
-            setClassRooms(res.content)
+            const res = await adminApi.restoreClassRoom(id)
+            setClassRooms(prev =>
+                prev.map(c =>
+                    c.id === id ? { ...c, ...res } : c
+                )
+            );
+            toast.success("Active class success")
         } catch (err) {
-            toast.error("Failed to restore")
+            console.error(err);
+            const errorMessage = "Failed to active class";
+            toast.error(err.response.data?.message || errorMessage);
         }
     }
 
     const onSubmit = async (data) => {
         try {
             if (isEdit) {
-                await adminApi.updateClassRoom(selectedClassId, data)
+                const res = await adminApi.updateClassRoom(selectedClassId, data);
+                setClassRooms(prev =>
+                    prev.map(c =>
+                        c.id === selectedClassId ? { ...c, ...res } : c
+                    )
+                );
                 toast.success("Updated successfully")
             } else {
-                await adminApi.createClassRoom(data)
+                const res = await adminApi.createClassRoom(data);
+                setClassRooms([...classRooms, res]);
                 toast.success("Created successfully")
             }
-            setLgShow(false)
-            const res = await adminApi.getAllClassRooms(page, size)
-            setClassRooms(res.content)
+            setLgShow(false);
+            setIsEdit(false);
+            setSelectedTeacher([]);
+
         } catch (err) {
-            toast.error("Error saving class")
+            console.error(err);
+            const errorMessage = isEdit ? "Edit class fail" : "Create class fail";
+            toast.error(err.response.data?.message || errorMessage);
         }
     }
 
@@ -173,7 +218,7 @@ const ClassRooms = () => {
                                             {cls.status === "1" ? "Active" : "Inactive"}
                                         </Badge>
                                     </td>
-                                    <td>{cls.createdDate}</td>
+                                    <td>{new Date(cls.createdDate).toLocaleDateString("en-CA")}</td>
                                     <td>{cls.studentCount}</td>
                                     <td>
                                         <div className="d-flex gap-2">
@@ -230,42 +275,74 @@ const ClassRooms = () => {
 
             {/* Modal */}
             <Modal size="lg" show={lgShow} onHide={() => setLgShow(false)}>
-                <Modal.Header closeButton>
+                <Modal.Header>
                     <Modal.Title>{isEdit ? "Edit Class" : "Add Class"}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleSubmit(onSubmit)}>
                         <Form.Group className='mb-3' controlId='className'>
                             <Form.Label>Class Name</Form.Label>
-                            <Form.Control type='text' placeholder='Enter class name' 
-                            {...register("name")}
-                            isInvalid={!!erros.name}
+                            <Form.Control type='text' placeholder='Enter class name'
+                                {...register("name")}
+                                isInvalid={!!errors.name}
                             />
-                            <Form.Control.Feedback type='invalid'>{erros.name?.message}</Form.Control.Feedback>
+                            <Form.Control.Feedback type='invalid'>{errors.name?.message}</Form.Control.Feedback>
                         </Form.Group>
 
                         <Form.Group className='mb-3' controlId='title'>
                             <Form.Label>Title</Form.Label>
-                            <Form.Control type='text' placeholder='Enter title' 
-                            {...register("title")}
-                            isInvalid={!!erros.title}
+                            <Form.Control type='text' placeholder='Enter title'
+                                {...register("title")}
+                                isInvalid={!!errors.title}
                             />
-                            <Form.Control.Feedback type='invalid'>{erros.title?.message}</Form.Control.Feedback>
+                            <Form.Control.Feedback type='invalid'>{errors.title?.message}</Form.Control.Feedback>
                         </Form.Group>
 
-                        <Form.Group className='mb-3' controlId='code'>
-                            <Form.Label>Code</Form.Label>
-                            <Form.Control type='text' placeholder='Enter classroom code'
-                             {...register("code")}
-                             isInvalid={!!erros.code}
-                             />
-                             <Form.Control.Feedback type='invalid'>{erros.code?.message}</Form.Control.Feedback>
+                        <Form.Group className='mb-3' controlId='teacher'>
+                            <Form.Label>Teacher</Form.Label>
+                            <Typeahead
+                                id='teacher-typeahead'
+                                labelKey={'fullName'}
+                                minLength={1}
+                                options={teachers}
+                                filterBy={(option, prop) => {
+                                    const text = prop.text.toLowerCase();
+                                    return (
+                                        option.email.toLowerCase().includes(text) ||
+                                        option.fullName.toLowerCase().includes(text)
+                                    )
+                                }}
+                                onChange={(selected) => {
+                                    if (selected.length > 0) {
+                                        setValue("teacherId", selected[0].id);
+                                        setSelectedTeacher(selected);
+                                    } else {
+                                        setValue("teacherId", '');
+                                        setSelectedTeacher([]);
+                                    }
+                                }}
+                                selected={selectedTeacher}
+                                placeholder='Select a teacher'
+                            />
+                            {errors.teacherId && (
+                                <Form.Control.Feedback className='d-block' type='invalid'>{errors.teacherId?.message}</Form.Control.Feedback>
+                            )}
                         </Form.Group>
 
-                        
+
                         <div className='d-flex justify-content-end gap-3'>
                             <Button type='submit' disabled={isSubmitting}>{isEdit ? "Update" : "Submit"}</Button>
-                            <Button variant='secondary' onClick={() => setLgShow(false)}>Close</Button>
+                            <Button variant='secondary' onClick={() => {
+                                setLgShow(false)
+                                setIsEdit(false);
+                                reset({
+                                    name: '',
+                                    title: '',
+                                    teacherId: '',
+                                });
+                                setSelectedTeacher([]);
+                            }
+                            }>Close</Button>
                         </div>
                     </Form>
                 </Modal.Body>

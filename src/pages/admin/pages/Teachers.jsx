@@ -105,8 +105,9 @@ const Teachers = () => {
       );
       toast.success("Delete teacher successfull");
     } catch (error) {
+      const errorMessage = "Can not delete teacher account";
       console.error(error);
-      toast.error("Can not delete teacher account");
+      toast.error(error.response.data?.message || errorMessage);
     }
   }
 
@@ -133,7 +134,12 @@ const Teachers = () => {
     setLgShow(true);
     setIsEdit(false);
     setSelectedTeacherId(null);
-    reset();
+    reset({roleId: 2,
+      fullName: '',
+      email: '',
+      phoneNumber: '',
+      address: '',
+      dateOfBirth: '',});
   }
 
   const onSubmit = async (data) => {
@@ -265,6 +271,7 @@ const Teachers = () => {
                                 handleEdit(teacher.id);
                               }}
                               title="Edit"
+                              disabled={teacher.status !== 1}
                             >
                               <Edit size={14} />
                             </Button>
