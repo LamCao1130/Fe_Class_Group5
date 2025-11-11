@@ -8,8 +8,9 @@ import {
   Form,
   Navbar,
   Nav,
+  Modal,
 } from "react-bootstrap";
-import studentApi from "../studentApi/studentApi";
+import studentApi from "../../student/studentApi/studentApi";
 import { useParams } from "react-router";
 
 const getTypeInfo = (type) => {
@@ -28,6 +29,8 @@ const getTypeInfo = (type) => {
 };
 
 const SubmissionHistory = () => {
+  const [showWrting, setShowWriting] = useState(false);
+  const [writingText, setWritingText] = useState();
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fakeSubmission, setFakeSubmission] = useState();
@@ -101,19 +104,18 @@ const SubmissionHistory = () => {
     }
   };
 
-  const renderNumberWrong = (type, numberWrong) => {
-    const isGradedType = ["vocab", "writing", "reading"].includes(
-      type.toLowerCase()
-    );
+  const handleShow = (item) => {
+    setShowWriting(true);
+    setWritingText(item.answerText);
+  };
 
-    if (isGradedType && numberWrong !== null) {
+  const renderNumberWrong = (numberWrong) => {
+    if (numberWrong !== null) {
       if (numberWrong > 0) {
         return <span className="text-danger"> {numberWrong} lỗi</span>;
       }
       return <span className="text-success"> Hoàn hảo (0 lỗi)</span>;
     }
-
-    return <span className="text-muted">N/A</span>;
   };
 
   if (loading) {
@@ -234,7 +236,18 @@ const SubmissionHistory = () => {
                       <Badge bg={typeInfo.variant}>{typeInfo.label}</Badge>
                     </td>
                     <td>{formatDateTime(item.submittedAt)}</td>
-                    <td>{renderNumberWrong(item.type, item.numberWrong)}</td>
+                    <td>
+                      {item.type != "writing" ? (
+                        renderNumberWrong(item.numberWrong)
+                      ) : (
+                        <span
+                          style={{ cursor: "pointer" }}
+                          onClick={() => handleShow(item)}
+                        >
+                          View detail
+                        </span>
+                      )}
+                    </td>
                     <td>
                       <span
                         className={
@@ -256,6 +269,28 @@ const SubmissionHistory = () => {
           </Table>
         </Card.Body>
       </Card>
+      <Modal show={showWrting} onHide={() => setShowModal(false)} size="lg">
+        <Modal.Body>
+          <p className="text-muted">Nội dung bài làm:</p>
+          <div
+            style={{
+              whiteSpace: "pre-wrap",
+              maxHeight: "50vh",
+              overflowY: "auto",
+              border: "1px solid #eee",
+              padding: "15px",
+              borderRadius: "5px",
+            }}
+          >
+            {writingText}
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowWriting(false)}>
+            Đóng
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 };
