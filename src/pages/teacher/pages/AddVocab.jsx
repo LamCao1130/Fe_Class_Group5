@@ -1,23 +1,25 @@
 import Item from "antd/es/list/Item";
 import React, { useState } from "react";
-import { Button, Col, Row, Table } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 import { Modal } from "antd";
 import teacherService from "../services/TeacherSerivceApi";
 import { ca } from "zod/v4/locales";
 import { useNavigate, useParams } from "react-router";
-import { toast, ToastContainer } from "react-toastify";
+import axiosApi from "../../../components/AxiosApi";
+import { ToastContainer, toast } from "react-toastify";
 
 const AddVocab = () => {
   let { id } = useParams();
+  const navigate = useNavigate();
+  const [isModalOpenImport, setIsModalOpenImport] = useState(false);
   const initialRowDefault = {
     englishWord: "",
     wordType: "",
     vietnameseMeaning: "",
     pronunciation: "",
+    exampleSample: "",
     lessonId: id,
   };
-  const [isModalOpenImport, setIsModalOpenImport] = useState(false);
-
   const [file, setFile] = useState(null);
 
   const showModalImport = () => {
@@ -28,9 +30,9 @@ const AddVocab = () => {
     if (file) {
       try {
         let res = await teacherService.importVocab(file, id);
-        console.log("File uploaded successfully:", res);
+        toast.success("tạo thành công");
       } catch (error) {
-        console.log("Error uploading file:", error);
+        toast.error("tạo thất bại");
       }
     }
     setIsModalOpenImport(false);
@@ -48,9 +50,6 @@ const AddVocab = () => {
     console.log(newList);
     setNewword(newList);
   };
-
-  console.log(newword);
-
   const handleDeleteRow = (row) => {
     const list = [...newword];
     list.splice(row, 1);
@@ -65,19 +64,50 @@ const AddVocab = () => {
 
     setNewword(list);
   };
-  const navigate = useNavigate();
+
+  const downloadExcel = async () => {
+    try {
+      const response = await axiosApi.get(
+        "http://localhost:8080/api/v1/vocab/export-demo",
+        {
+          responseType: "blob", // BẮT BUỘC
+        }
+      );
+
+      // Tạo file blob từ response
+      const file = new Blob([response.data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      const fileURL = URL.createObjectURL(file);
+
+      // Tạo thẻ <a> để download
+      const link = document.createElement("a");
+      link.href = fileURL;
+      link.download = "vocabulary.xlsx";
+      link.click();
+
+      URL.revokeObjectURL(fileURL);
+    } catch (error) {
+      console.error("Lỗi khi tải file:", error);
+    }
+  };
   const handleSubmit = async () => {
+    console.log("List check:", newword);
     setsubmited(true);
     const isAnyFieldEmpty = newword.some(
       (word) =>
         !word.englishWord.trim() ||
         !word.vietnameseMeaning.trim() ||
         !word.pronunciation ||
+        !word.exampleSample ||
         !word.wordType
     );
 
     if (isAnyFieldEmpty) {
-      toast.error("Vui lòng điền đầy đủ các trường");
+      toast.error(
+        "VUI LÒNG ĐIỀN ĐẦY ĐỦ THÔNG TIN: Không được để trống bất kỳ ô nào."
+      );
       return;
     }
     await teacherService.createVocab(newword);
@@ -86,43 +116,40 @@ const AddVocab = () => {
   };
   return (
     <div>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-      />
-      <Row className="mb-4 align-items-center border-bottom pb-2">
-        <Col md={4}>
-          <h2 className="text-primary">Thêm Từ Mới</h2>
-        </Col>
-        <Col md={8} className="d-flex justify-content-end gap-2">
-          <Button variant="outline-secondary" onClick={() => navigate(-1)}>
-            ← Quay về
-          </Button>
-
-          <Button variant="info" onClick={showModalImport}>
-            Import từ Excel
-          </Button>
-
-          <Button variant="success" onClick={handleAddRow}>
-            + Thêm Hàng
-          </Button>
-        </Col>
-
+      <ToastContainer position="top-right" autoClose={3000} />
+      <div className="d-flex justify-content-between mb-3 mx-1 mt-2">
+        <h2>New Vocabulary</h2>
+        <Button type="primary" onClick={showModalImport}>
+          Import from Excel
+        </Button>
         <Modal
-          title="Import Từ Vựng"
-          closable={true}
+          title="Import file excel"
+          closable={{ "aria-label": "Custom Close Button" }}
           open={isModalOpenImport}
           onOk={handleOkImport}
           onCancel={handleCancelImport}
         >
+          <Button onClick={downloadExcel}>Tải file mẫu</Button>
+          <p style={{ color: "red" }}>
+            * Yêu cầu thầy/cô tạo file giống file mẫu
+          </p>
           <input
             type="file"
-            className="form-control mt-3"
+            name=""
+            id=""
             onChange={(e) => setFile(e.target.files[0])}
           />
         </Modal>
-      </Row>
+        <Button variant="outline-secondary" onClick={() => navigate(-1)}>
+          ← Quay về
+        </Button>
+        <Button
+          onClick={() => handleAddRow()}
+          className="border border-none  bg-primary"
+        >
+          Create new{" "}
+        </Button>
+      </div>
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -131,6 +158,7 @@ const AddVocab = () => {
             <th>Type</th>
             <th>Meaning</th>
             <th>Pronounciation</th>
+            <th>Example</th>
             <th></th>
           </tr>
         </thead>
@@ -171,6 +199,14 @@ const AddVocab = () => {
                     value={item.pronunciation}
                   />
                 </td>{" "}
+                <td>
+                  <input
+                    type="text"
+                    name="exampleSample"
+                    onChange={(e) => handleInputChange(index, e)}
+                    value={item.exampleSample}
+                  />
+                </td>
                 <td>
                   <button
                     className="border border-none"
