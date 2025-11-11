@@ -136,5 +136,40 @@ let teacherService = {
     );
     return res.data;
   },
+  getHistory: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/Question/${id}/submissionHistory`
+    );
+    return res.data;
+  },
+  createExam: async (data) => {
+    let res = await axiosApi.post(
+      `http://localhost:8080/api/v1/exam/create`,
+      data
+    );
+    return res.data;
+  },
+  getExam: async (id) => {
+    let res = await axiosApi.get(`http://localhost:8080/api/v1/exam/${id}`);
+    return res.data;
+  },
+  getExamByClassroom: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/exam/get-by-classRoomId/${id}`
+    );
+    return res.data;
+  },
+  getQuestionByExam: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/Question/exam/manage/${id}`
+    );
+    return res.data;
+  },
+  getComingExam: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/exam/comingTest/${id}`
+    );
+    return res.data;
+  },
 };
 export default teacherService;

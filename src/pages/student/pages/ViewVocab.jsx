@@ -30,14 +30,25 @@ export default function ViewVocab() {
   };
   return (
     <>
-      <Button
-        variant="success"
-        onClick={() => {
-          navigate("/student/doExercise/" + lessionId + "/mcAndFill");
-        }}
-      >
-        Làm bài tập
-      </Button>
+      <div className="mt-3">
+        <Button
+          variant="success"
+          onClick={() => {
+            navigate("/student/doExercise/" + lessionId + "/mcAndFill");
+          }}
+        >
+          Làm bài tập
+        </Button>
+        <Button
+          className="ms-3"
+          variant="success"
+          onClick={() => {
+            navigate("/student/history/" + lessionId);
+          }}
+        >
+          Lịch sử làm bài
+        </Button>
+      </div>
       <div>
         <h1 style={{ textAlign: "center" }}>{title?.title}</h1>
         <Card style={{ marginTop: "30px" }}>
