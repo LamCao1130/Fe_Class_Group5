@@ -134,12 +134,14 @@ const Teachers = () => {
     setLgShow(true);
     setIsEdit(false);
     setSelectedTeacherId(null);
-    reset({roleId: 2,
+    reset({
+      roleId: 2,
       fullName: '',
       email: '',
       phoneNumber: '',
       address: '',
-      dateOfBirth: '',});
+      dateOfBirth: '',
+    });
   }
 
   const onSubmit = async (data) => {
@@ -302,6 +304,19 @@ const Teachers = () => {
                                 <RefreshCcw size={14} />
                               </Button>
                             }
+                            {/* restore secret_code */}
+                            <Button
+                              variant="outline-info"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRestoreSecretCode(teacher.id);
+                              }}
+                              title="Restore Secret Code"
+                              disabled={teacher.status !== 1}
+                            >
+                              <Eye size={14} />
+                            </Button>
 
                           </div>
                         </td>
