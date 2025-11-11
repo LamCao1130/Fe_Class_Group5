@@ -31,7 +31,9 @@ const AddVocab = () => {
       try {
         let res = await teacherService.importVocab(file, id);
         toast.success("tạo thành công");
+        toast.success("tạo thành công");
       } catch (error) {
+        toast.error("tạo thất bại");
         toast.error("tạo thất bại");
       }
     }
@@ -117,6 +119,7 @@ const AddVocab = () => {
   return (
     <div>
       <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer position="top-right" autoClose={3000} />
       <div className="d-flex justify-content-between mb-3 mx-1 mt-2">
         <h2>New Vocabulary</h2>
         <Button type="primary" onClick={showModalImport}>
@@ -129,6 +132,10 @@ const AddVocab = () => {
           onOk={handleOkImport}
           onCancel={handleCancelImport}
         >
+          <Button onClick={downloadExcel}>Tải file mẫu</Button>
+          <p style={{ color: "red" }}>
+            * Yêu cầu thầy/cô tạo file giống file mẫu
+          </p>
           <Button onClick={downloadExcel}>Tải file mẫu</Button>
           <p style={{ color: "red" }}>
             * Yêu cầu thầy/cô tạo file giống file mẫu
