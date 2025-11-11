@@ -118,7 +118,7 @@ const CreateExamModal = ({ show, handleClose, onSave }) => {
               <Form.Group as={Col} controlId="formExamDate">
                 <Form.Label>Ngày Thi</Form.Label>
                 <Form.Control
-                  type="date"
+                  type="datetime-local"
                   name="examDate"
                   value={formData.examDate}
                   onChange={handleChange}
