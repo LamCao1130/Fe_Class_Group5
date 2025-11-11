@@ -49,7 +49,7 @@ const CreateStudent = ({
     }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0; // true nếu không có lỗi
+    return Object.keys(newErrors).length === 0;
   };
 
   const onSubmit = () => {
@@ -66,7 +66,7 @@ const CreateStudent = ({
 
       <Modal.Body>
         <Form>
-          {/* Full name */}
+
           <Form.Group className="mb-3">
             <Form.Label>Full Name</Form.Label>
             <Form.Control
@@ -81,7 +81,6 @@ const CreateStudent = ({
             </Form.Control.Feedback>
           </Form.Group>
 
-          {/* Email */}
           <Form.Group className="mb-3">
             <Form.Label>Email</Form.Label>
             <Form.Control
@@ -96,7 +95,6 @@ const CreateStudent = ({
             </Form.Control.Feedback>
           </Form.Group>
 
-          {/* Phone */}
           <Form.Group className="mb-3">
             <Form.Label>Phone Number</Form.Label>
             <Form.Control
@@ -111,7 +109,6 @@ const CreateStudent = ({
             </Form.Control.Feedback>
           </Form.Group>
 
-          {/* Password */}
           <Form.Group className="mb-3">
             <Form.Label>Password</Form.Label>
             <Form.Control
@@ -126,7 +123,6 @@ const CreateStudent = ({
             </Form.Control.Feedback>
           </Form.Group>
 
-          {/* Address */}
           <Form.Group className="mb-3">
             <Form.Label>Address</Form.Label>
             <Form.Control
@@ -141,7 +137,6 @@ const CreateStudent = ({
             </Form.Control.Feedback>
           </Form.Group>
 
-          {/* Date of birth */}
           <Form.Group className="mb-3">
             <Form.Label>Date of Birth</Form.Label>
             <Form.Control

@@ -113,7 +113,7 @@ const Dashboard = () => {
       <Row className="mb-4">
         <Col>
           <h2 className="fw-bold text-dark mb-2">Dashboard Overview</h2>
-          <p className="text-muted">Welcome to IELTS Admin System</p>
+          <p className="text-muted">Welcome to EngJoy</p>
         </Col>
       </Row>
 
