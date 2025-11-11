@@ -34,7 +34,9 @@ import Listening from "../pages/student/components/Listening";
 import Writting from "../pages/student/components/Writting";
 import SubmissionHistory from "../pages/student/pages/SubmitionHistory";
 import QuestionDetail from "../pages/teacher/components/QuestionDetail";
+import ResetPassword from "../components/ResetPassword";
 let router = createBrowserRouter([
+  {path:"/resetPassword",element:<ResetPassword />},
   {
     path: "/fail403",
     element: <Fail403 />,
