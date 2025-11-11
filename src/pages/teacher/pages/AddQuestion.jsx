@@ -56,6 +56,7 @@ const AddQuestion = () => {
         (item) => item.value === "reading" || item.value === "mc"
       );
       serNewPartType(filtered);
+      setPartType("mc");
     }
   }, [isExam]);
   const [alert, setAlert] = useState({ show: false, msg: "", variant: "" });

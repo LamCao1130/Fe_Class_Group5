@@ -34,6 +34,8 @@ import Listening from "../pages/student/components/Listening";
 import Writting from "../pages/student/components/Writting";
 import SubmissionHistory from "../pages/teacher/pages/SubmitionHistory";
 import QuestionDetail from "../pages/teacher/components/QuestionDetail";
+import ExamQuestion from "../pages/student/pages/ExamQuestion";
+import ExamAttempHistory from "../pages/teacher/pages/ExamAttempHistory";
 let router = createBrowserRouter([
   {
     path: "/fail403",
@@ -68,6 +70,10 @@ let router = createBrowserRouter([
       {
         path: "lesson/:id/addQuestion",
         element: <AddQuestion></AddQuestion>,
+      },
+      {
+        path: "classroom/:id/examAttempt",
+        element: <ExamAttempHistory></ExamAttempHistory>,
       },
       {
         path: "exam/:id",
@@ -112,7 +118,7 @@ let router = createBrowserRouter([
     ),
     children: [
       // { path: "homepage", element: <HomePageStudent /> },
-
+      { path: "doExam/:id", element: <ExamQuestion></ExamQuestion> },
       { path: "classroom", element: <ClassRoomList /> },
       { path: "profileStudent", element: <ProfilePage /> },
       { path: "classroom/:classRoomId", element: <LessonList /> },

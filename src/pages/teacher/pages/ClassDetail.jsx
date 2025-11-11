@@ -213,7 +213,16 @@ const ClassDetail = () => {
                         <i className="bi bi-plus-circle"></i> Thêm mới Bài kiểm
                         tra
                       </Button>
-
+                      <Button
+                        variant="outline-danger"
+                        className="w-100 d-flex align-items-center justify-content-center gap-2 mb-3"
+                        onClick={() =>
+                          navigate(`/teacher/classroom/${id}/examAttempt`)
+                        }
+                      >
+                        <i className="bi bi-plus-circle"></i> Kết quả các bài
+                        kiểm tra
+                      </Button>
                       {dataExam.length > 0 ? (
                         dataExam.map((exam) => (
                           <Card
