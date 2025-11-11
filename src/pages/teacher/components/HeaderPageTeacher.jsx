@@ -53,10 +53,11 @@ const HeaderPageTeacher = ({ setShowJoinModal }) => {
               </Dropdown.Toggle>
 
               <Dropdown.Menu>
-                <Dropdown.Item as={Link} to="/profile">
+                <Dropdown.Item as={Link} to="profile">
                   <i className="bi bi-person-circle me-2"></i> Xem Hồ sơ
                 </Dropdown.Item>
                 <Dropdown.Divider />
+
                 <Dropdown.Item
                   className="text-danger"
                   onClick={() => {

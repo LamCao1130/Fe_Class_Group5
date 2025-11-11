@@ -34,9 +34,13 @@ import Listening from "../pages/student/components/Listening";
 import Writting from "../pages/student/components/Writting";
 import SubmissionHistory from "../pages/teacher/pages/SubmitionHistory";
 import QuestionDetail from "../pages/teacher/components/QuestionDetail";
-import ExamQuestion from "../pages/student/pages/ExamQuestion";
+import ClassRooms from "../pages/admin/pages/ClassRooms";
+import ClassRoomDetail from "../pages/admin/pages/ClassRoomDetail";
+import ResetPassword from "../components/ResetPassword";
 import ExamAttempHistory from "../pages/teacher/pages/ExamAttempHistory";
+import ExamQuestion from "../pages/student/pages/ExamQuestion";
 let router = createBrowserRouter([
+  { path: "/resetPassword", element: <ResetPassword /> },
   {
     path: "/fail403",
     element: <Fail403 />,
@@ -62,6 +66,10 @@ let router = createBrowserRouter([
       {
         path: "",
         element: <HomePage />,
+      },
+      {
+        path: "profile",
+        element: <ProfilePage></ProfilePage>,
       },
       {
         path: "lesson/:id/addvocab",
@@ -175,6 +183,8 @@ let router = createBrowserRouter([
       { path: "teachers/:id", element: <TeacherDetail /> },
       { path: "student", element: <Students /> },
       { path: "student/:id", element: <StudentDetail /> },
+      { path: "classrooms", element: <ClassRooms /> },
+      { path: "classrooms/:id", element: <ClassRoomDetail /> },
     ],
   },
 ]);

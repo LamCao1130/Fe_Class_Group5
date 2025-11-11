@@ -1,20 +1,21 @@
 import Item from "antd/es/list/Item";
 import React, { useState } from "react";
-import { Button, Table } from "react-bootstrap";
+import { Button, Col, Row, Table } from "react-bootstrap";
 import { Modal } from "antd";
 import teacherService from "../services/TeacherSerivceApi";
 import { ca } from "zod/v4/locales";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import { toast, ToastContainer } from "react-toastify";
 
-const initialRowDefault = {
-  EnglishWord: "",
-  type: "",
-  vietnamese: "",
-  pnonounciation: "",
-  example: "",
-};
 const AddVocab = () => {
   let { id } = useParams();
+  const initialRowDefault = {
+    englishWord: "",
+    wordType: "",
+    vietnameseMeaning: "",
+    pronunciation: "",
+    lessonId: id,
+  };
   const [isModalOpenImport, setIsModalOpenImport] = useState(false);
 
   const [file, setFile] = useState(null);
@@ -47,6 +48,9 @@ const AddVocab = () => {
     console.log(newList);
     setNewword(newList);
   };
+
+  console.log(newword);
+
   const handleDeleteRow = (row) => {
     const list = [...newword];
     list.splice(row, 1);
@@ -61,53 +65,64 @@ const AddVocab = () => {
 
     setNewword(list);
   };
-  const handleSubmit = () => {
-    console.log("List check:", newword);
+  const navigate = useNavigate();
+  const handleSubmit = async () => {
     setsubmited(true);
     const isAnyFieldEmpty = newword.some(
       (word) =>
-        !word.EnglishWord.trim() ||
-        !word.vietnamese.trim() ||
-        !word.pnonounciation ||
-        !word.example ||
-        !word.type
+        !word.englishWord.trim() ||
+        !word.vietnameseMeaning.trim() ||
+        !word.pronunciation ||
+        !word.wordType
     );
 
     if (isAnyFieldEmpty) {
-      alert(
-        "VUI LÒNG ĐIỀN ĐẦY ĐỦ THÔNG TIN: Không được để trống bất kỳ ô nào."
-      );
+      toast.error("Vui lòng điền đầy đủ các trường");
       return;
     }
+    await teacherService.createVocab(newword);
+    setNewword([]);
+    toast.success("Add vocab success");
   };
   return (
     <div>
-      <div className="d-flex justify-content-between mb-3 mx-1 mt-2">
-        <h2>New Vocabulary</h2>
-        <Button type="primary" onClick={showModalImport}>
-          Import from Excel
-        </Button>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+      />
+      <Row className="mb-4 align-items-center border-bottom pb-2">
+        <Col md={4}>
+          <h2 className="text-primary">Thêm Từ Mới</h2>
+        </Col>
+        <Col md={8} className="d-flex justify-content-end gap-2">
+          <Button variant="outline-secondary" onClick={() => navigate(-1)}>
+            ← Quay về
+          </Button>
+
+          <Button variant="info" onClick={showModalImport}>
+            Import từ Excel
+          </Button>
+
+          <Button variant="success" onClick={handleAddRow}>
+            + Thêm Hàng
+          </Button>
+        </Col>
+
         <Modal
-          title="Basic Modal"
-          closable={{ "aria-label": "Custom Close Button" }}
+          title="Import Từ Vựng"
+          closable={true}
           open={isModalOpenImport}
           onOk={handleOkImport}
           onCancel={handleCancelImport}
         >
           <input
             type="file"
-            name=""
-            id=""
+            className="form-control mt-3"
             onChange={(e) => setFile(e.target.files[0])}
           />
         </Modal>
-        <Button
-          onClick={() => handleAddRow()}
-          className="border border-none  bg-primary"
-        >
-          Create new{" "}
-        </Button>
-      </div>
+      </Row>
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -116,69 +131,46 @@ const AddVocab = () => {
             <th>Type</th>
             <th>Meaning</th>
             <th>Pronounciation</th>
-            <th>Example</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
           {newword.map((item, index) => {
-            const englishIsInvalid = !item.EnglishWord.trim();
-            const vietnameseIsInvalid = !item.vietnamese.trim();
-            const pronounciationIsInvalid = !item.pnonounciation.trim();
-            const typeIsInvalid = !item.type.trim();
-            const exampleInvalid = !item.example.trim();
             return (
               <tr>
                 <td>{index + 1}</td>
                 <td>
                   <input
-                    className={englishIsInvalid && submited ? "bg-danger" : ""}
                     type="text"
-                    name="EnglishWord"
-                    // value={item.EnglishWord}
+                    name="englishWord"
+                    value={item.englishWord}
                     onChange={(e) => handleInputChange(index, e)}
                   />
                 </td>
                 <td>
                   <input
-                    className={typeIsInvalid && submited ? "bg-danger" : ""}
                     type="text"
-                    name="type"
+                    name="wordType"
                     onChange={(e) => handleInputChange(index, e)}
-                    // value={item.type}
+                    value={item.wordType}
                   />
                 </td>{" "}
                 <td>
                   <input
                     type="text"
-                    className={
-                      vietnameseIsInvalid && submited ? "bg-danger" : ""
-                    }
-                    name="vietnamese"
+                    name="vietnameseMeaning"
                     onChange={(e) => handleInputChange(index, e)}
-                    // value={item.vietnamese}
-                  />
-                </td>{" "}
-                <td>
-                  <input
-                    className={
-                      pronounciationIsInvalid && submited ? "bg-danger" : ""
-                    }
-                    type="text"
-                    name="pnonounciation"
-                    onChange={(e) => handleInputChange(index, e)}
-                    // value={item.pnonounciation}
+                    value={item.vietnameseMeaning}
                   />
                 </td>{" "}
                 <td>
                   <input
                     type="text"
-                    className={exampleInvalid && submited ? "bg-danger" : ""}
-                    name="example"
+                    name="pronunciation"
                     onChange={(e) => handleInputChange(index, e)}
-                    // value={item.example}
+                    value={item.pronunciation}
                   />
-                </td>
+                </td>{" "}
                 <td>
                   <button
                     className="border border-none"

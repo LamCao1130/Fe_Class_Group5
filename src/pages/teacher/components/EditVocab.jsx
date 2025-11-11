@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import teacherService from "../services/TeacherSerivceApi";
+import { toast, ToastContainer } from "react-toastify";
 
 const EditVocabModal = ({ show, handleClose, vocabData, onSave }) => {
   const [formData, setFormData] = useState(vocabData);
@@ -9,16 +10,16 @@ const EditVocabModal = ({ show, handleClose, vocabData, onSave }) => {
   const validateForm = (data) => {
     const errors = {};
 
-    if (!data.vocab || data.vocab.trim() === "") {
+    if (!data.englishWord || data.englishWord.trim() === "") {
       errors.vocab = "Từ vựng không được để trống.";
     }
 
-    if (!data.meaning || data.meaning.trim() === "") {
+    if (!data.vietnameseMeaning || data.vietnameseMeaning.trim() === "") {
       errors.meaning = "Nghĩa không được để trống.";
     }
 
-    if (!data.type) {
-      errors.type = "Vui lòng chọn Từ loại.";
+    if (!data.wordType) {
+      errors.wordType = "Vui lòng chọn Từ loại.";
     }
 
     return errors;
@@ -36,16 +37,29 @@ const EditVocabModal = ({ show, handleClose, vocabData, onSave }) => {
   const handleSubmit = async () => {
     try {
       const validationError = validateForm(formData);
+      if (Object.keys(validationError).length != 0) {
+        console.log(Object.keys(validationError).length);
+        toast.error("Vui lòng điền đầy đủ thông tin các trường");
+        return;
+      }
       await teacherService.editVocab(formData);
       onSave();
+      toast.success("Chỉnh sửa thành công");
       handleClose();
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   if (!formData) return null;
 
   return (
     <Modal show={show} onHide={handleClose}>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+      />
       <Modal.Header closeButton>
         <Modal.Title>Update English word : {englishChange}</Modal.Title>
       </Modal.Header>
@@ -93,17 +107,6 @@ const EditVocabModal = ({ show, handleClose, vocabData, onSave }) => {
               type="text"
               name="pronunciation"
               value={formData.pronunciation || ""}
-              onChange={handleChange}
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>Example</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              name="example"
-              value={formData.example || ""}
               onChange={handleChange}
             />
           </Form.Group>

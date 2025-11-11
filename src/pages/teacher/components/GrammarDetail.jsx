@@ -11,10 +11,10 @@ const GrammarDetail = ({ id }) => {
   const [render, setRender] = useState(false);
   const [showEditGrammar, setshowEditGrammar] = useState(false);
   const [update, setUpdate] = useState();
-  const [message, setMessage] = useState({
-    message: "",
-    type: "",
-  });
+
+  const setMessage = () => {
+    toast.success("Chỉnh sửa ngữ pháp thành công");
+  };
   useEffect(() => {
     async function fetchListGrammar() {
       teacherService
@@ -151,6 +151,7 @@ const GrammarDetail = ({ id }) => {
         showGrammar={showEditGrammar}
         type={"Chỉnh sửa"}
         update={update}
+        setMessage={() => setMessage()}
         handleClose={() => setshowEditGrammar(false)}
         onSave={() => setRender(!render)}
       ></AddGrammarModal>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import teacherService from "../services/TeacherSerivceApi";
 import { useParams } from "react-router";
+import { message } from "antd";
 
 const AddGrammarModal = ({
   showGrammar,
@@ -45,14 +46,11 @@ const AddGrammarModal = ({
 
       if (update) {
         await teacherService.updateGrammar(dataToSave);
+        setMessage();
       } else {
         await teacherService.createGrammar(dataToSave);
+        setMessage();
       }
-
-      setMessage({
-        type: "success",
-        message: `${type} grammar success`,
-      });
     } catch (error) {
       console.error("Lỗi khi lưu ngữ pháp:", error);
       setMessage({
@@ -67,8 +65,6 @@ const AddGrammarModal = ({
         examples: "",
         usageNotes: "",
       });
-      onSave();
-      handleClose();
     }
   };
   return (
@@ -155,9 +151,13 @@ const AddGrammarModal = ({
               !newGrammar.explanation ||
               !newGrammar.structure
             }
-            onClick={() => handleSave()}
+            onClick={() => {
+              handleSave();
+              onSave();
+              handleClose();
+            }}
           >
-            Thêm
+            {update ? "Cập nhật" : "THêm"}
           </Button>
         </Modal.Footer>
       </Modal>
