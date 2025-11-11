@@ -32,11 +32,13 @@ import Vocabulary from "../pages/student/components/Vocabulary";
 import Reading from "../pages/student/components/Reading";
 import Listening from "../pages/student/components/Listening";
 import Writting from "../pages/student/components/Writting";
-import SubmissionHistory from "../pages/student/pages/SubmitionHistory";
+import SubmissionHistory from "../pages/teacher/pages/SubmitionHistory";
 import QuestionDetail from "../pages/teacher/components/QuestionDetail";
 import ClassRooms from "../pages/admin/pages/ClassRooms";
 import ClassRoomDetail from "../pages/admin/pages/ClassRoomDetail";
+import ResetPassword from "../components/ResetPassword";
 let router = createBrowserRouter([
+  {path:"/resetPassword",element:<ResetPassword />},
   {
     path: "/fail403",
     element: <Fail403 />,

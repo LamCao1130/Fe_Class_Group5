@@ -172,7 +172,7 @@ function App() {
             <Button variant="primary" onClick={loginAccount}>
               Đăng nhập
             </Button>
-            <Link style={{ alignItems: "center", textAlign: "center" }}>
+            <Link style={{ alignItems: "center", textAlign: "center" }} to="/resetPassword">
               Quên mật khẩu
             </Link>
             <hr />
