@@ -32,7 +32,11 @@ import Vocabulary from "../pages/student/components/Vocabulary";
 import Reading from "../pages/student/components/Reading";
 import Listening from "../pages/student/components/Listening";
 import Writting from "../pages/student/components/Writting";
+import SubmissionHistory from "../pages/teacher/pages/SubmitionHistory";
+import QuestionDetail from "../pages/teacher/components/QuestionDetail";
+import ResetPassword from "../components/ResetPassword";
 let router = createBrowserRouter([
+  {path:"/resetPassword",element:<ResetPassword />},
   {
     path: "/fail403",
     element: <Fail403 />,
@@ -68,8 +72,20 @@ let router = createBrowserRouter([
         element: <AddQuestion></AddQuestion>,
       },
       {
+        path: "exam/:id",
+        element: <QuestionDetail></QuestionDetail>,
+      },
+      {
+        path: "exam/:id/addQuestion",
+        element: <AddQuestion></AddQuestion>,
+      },
+      {
         path: "lesson/:id",
         element: <LessonDetail></LessonDetail>,
+      },
+      {
+        path: "lesson/:id/historySubmit",
+        element: <SubmissionHistory></SubmissionHistory>,
       },
       {
         path: "manageClass/:id",
@@ -98,11 +114,16 @@ let router = createBrowserRouter([
     ),
     children: [
       // { path: "homepage", element: <HomePageStudent /> },
+
       { path: "classroom", element: <ClassRoomList /> },
       { path: "profileStudent", element: <ProfilePage /> },
       { path: "classroom/:classRoomId", element: <LessonList /> },
       { path: "classroom/:classRoomId/exam", element: <ExamList /> },
       { path: "vocab/:lessionId", element: <ViewVocab /> },
+      {
+        path: "history/:lessionId",
+        element: <SubmissionHistory></SubmissionHistory>,
+      },
     ],
   },
   {

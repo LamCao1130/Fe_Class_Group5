@@ -9,11 +9,13 @@ import {
   Alert,
 } from "react-bootstrap";
 import teacherService from "../services/TeacherSerivceApi";
-import { useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 import EditQuestionModal from "./EditQuestionModal";
 
 const QuestionDetail = () => {
+  const params = new URLSearchParams(location.search);
+  const isExam = params.get("mode") == "exam";
   const [questionGroups, setQuestionGroups] = useState([]);
   const { id } = useParams();
   const [render, setRender] = useState(false);
@@ -21,6 +23,7 @@ const QuestionDetail = () => {
   const [deleted, setDeleted] = useState();
   const [editingGroup, setEditingGroup] = useState();
   const [showEdit, setShowEdit] = useState(false);
+  const navigate = useNavigate();
   const handleDeleteGroup = (questionType) => {
     setConfirm(true);
     setDeleted(questionType);
@@ -57,8 +60,11 @@ const QuestionDetail = () => {
     setConfirm(false);
   };
   useEffect(() => {
-    teacherService.getQuestion(id).then((data) => setQuestionGroups(data));
+    teacherService
+      .getQuestionByExam(id)
+      .then((data) => setQuestionGroups(data));
   }, [render]);
+  console.log(questionGroups);
   const renderFillInTheBlank = (question, index) => {
     const isVerbForm =
       question.questionText.includes("( )") ||
@@ -133,8 +139,8 @@ const QuestionDetail = () => {
       >
         <Card.Header className="bg-info text-white d-flex justify-content-between align-items-center">
           <strong>
-            {group.questionTypeDto.name} (
-            {group.questionTypeDto.questions?.length})
+            {group?.questionTypeDto?.name} (
+            {group?.questionTypeDto?.questions?.length})
           </strong>
 
           <div>
@@ -185,7 +191,7 @@ const QuestionDetail = () => {
                       {q.options?.map((opt) => (
                         <Form.Check
                           key={opt.id}
-                          type="radio"
+                          type="checkbox"
                           label={opt.optionText}
                           name={`reading-${q.id}`}
                           disabled
@@ -338,11 +344,21 @@ const QuestionDetail = () => {
         `}
       >
         <Card.Header className="bg-primary text-white">
-          <strong>Câu hỏi trong bài học</strong>
+          <div className="d-flex justify-content-between">
+            <strong>Câu hỏi trong bài {isExam ? "kiểm tra" : "học"}</strong>
+            <Button
+              variant="dark"
+              onClick={() =>
+                navigate(`/teacher/exam/${id}/addQuestion?mode=exam`)
+              }
+            >
+              {isExam ? "Thêm câu hỏi" : ""}
+            </Button>
+          </div>
         </Card.Header>
         <Card.Body>
-          {questionGroups.length > 0 ? (
-            questionGroups.map((group, groupIndex) => {
+          {questionGroups?.length > 0 ? (
+            questionGroups?.map((group, groupIndex) => {
               const { questionTypeDto, readingDto } = group;
               const { type, name, questions } = questionTypeDto;
               if (type === "reading") {
@@ -357,7 +373,7 @@ const QuestionDetail = () => {
                   <Card.Header className="bg-secondary text-white d-flex justify-content-between align-items-center">
                     <div>
                       <strong>
-                        {name} ({questions.length})
+                        {name} ({questions?.length})
                       </strong>
                       <Badge bg="light" text="dark" className="ms-2">
                         {type?.toUpperCase()}
@@ -462,6 +478,7 @@ const QuestionDetail = () => {
         <EditQuestionModal
           show={showEdit}
           item={editingGroup}
+          isExam={isExam}
           setShowEdit={setShowEdit}
           speak={speak}
           onSave={() => setRender(!render)}

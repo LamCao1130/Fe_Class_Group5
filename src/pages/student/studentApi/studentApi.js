@@ -1,5 +1,6 @@
 import { da } from "zod/v4/locales";
 import axiosApi from "../../../components/AxiosApi";
+import { data } from "react-router";
 
 let studentApi = {
   joinClassRoom: async (code) => {
@@ -71,6 +72,26 @@ let studentApi = {
   getListReadingByLessonId: async (id) => {
     let res = await axiosApi.get(
       `http://localhost:8080/api/v1/Question/reading/${id}`
+    );
+    return res.data;
+  },
+  getAIAnswerWritting: async (data) => {
+    let res = await axiosApi.post(
+      `http://localhost:8080/api/v1/Question/AI-check-writing`,
+      data
+    );
+    return res.data;
+  },
+  submitWritting: async (data, id) => {
+    let res = await axiosApi.post(
+      `http://localhost:8080/api/v1/Question/check-answer-writing/${id}`,
+      data
+    );
+    return res.data;
+  },
+  getListSubmitionHistoryByLesson: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/Question/${id}/submissionHistory`
     );
     return res.data;
   },
