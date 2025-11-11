@@ -68,128 +68,138 @@ export default function Vocabulary() {
       }
     });
   };
-  return (
-    <>
-      <HeaderCLassStudent />
-      <ExerciseNavBar />
+  if (listFill.length === 0 && listMc.length === 0) {
+    return (
+      <>
+        <HeaderCLassStudent />
+        <ExerciseNavBar />
+        <h3>Không có bài tập</h3>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <HeaderCLassStudent />
+        <ExerciseNavBar />
 
-      <div>
-        {listFill.map((item) => {
-          return (
-            <>
-              <Card key={item.id}>
-                <Card.Title>{item.name}</Card.Title>
-                <Card.Body>
-                  {item.questions.map((q, index) => {
-                    return (
-                      <>
-                        <p>
-                          {index + 1}
-                          {". " + q.questionText}
-                        </p>
-                        <input
-                          type="text"
-                          placeholder="Điền đáp án"
-                          style={{
-                            padding: "15px",
-                            border: "1px solid gray",
-                            borderRadius: "15px",
-                          }}
-                          onChange={(e) =>
-                            handleTextChange(q.id, e.target.value)
-                          }
-                        />
-                      </>
-                    );
-                  })}
-                </Card.Body>
-              </Card>
-            </>
-          );
-        })}
-      </div>
-      <div style={{ marginTop: "30px" }}>
-        {listMc.map((item) => {
-          return (
-            <>
-              <Card key={item.id}>
-                <Card.Title>{item.name}</Card.Title>
-                <Card.Body>
-                  {item.questions.map((q, index) => {
-                    return (
-                      <>
-                        <p>
-                          {index + 1}
-                          {". " + q.questionText}
-                        </p>
-                        {q.options.map((op) => {
-                          return (
-                            <div style={{ marginLeft: "10px" }}>
-                              <input
-                                type="checkbox"
-                                onChange={() => handleSelect(q.id, op.id)}
-                              />
-                              <span>{op.optionText}</span>
-                            </div>
-                          );
-                        })}
-                      </>
-                    );
-                  })}
-                </Card.Body>
-              </Card>
-            </>
-          );
-        })}
-      </div>
-      <Button
-        style={{ margin: "30px" }}
-        onClick={async () => {
-          try {
-            let res = await studentApi.getListFailOptionVocab(
-              answers,
-              lessonId
-            );
-            console.log(res);
-            setResultFail(res);
-            handleShow();
-          } catch (e) {
-            console.log(e);
-          }
-        }}
-      >
-        Nộp nài
-      </Button>
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Những câu sai</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {resultFail?.map((p) => {
+        <div>
+          {listFill.map((item) => {
             return (
               <>
-                <p style={{ color: "red" }}>
-                  {p.questionText},{" "}
-                  <span style={{ color: "green" }}>
-                    answer: {p.textTrueAnswer}
-                  </span>
-                </p>
+                <Card key={item.id}>
+                  <Card.Title>{item.name}</Card.Title>
+                  <Card.Body>
+                    {item.questions.map((q, index) => {
+                      return (
+                        <>
+                          <p>
+                            {index + 1}
+                            {". " + q.questionText}
+                          </p>
+                          <input
+                            type="text"
+                            placeholder="Điền đáp án"
+                            style={{
+                              padding: "15px",
+                              border: "1px solid gray",
+                              borderRadius: "15px",
+                            }}
+                            onChange={(e) =>
+                              handleTextChange(q.id, e.target.value)
+                            }
+                          />
+                        </>
+                      );
+                    })}
+                  </Card.Body>
+                </Card>
               </>
             );
           })}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="primary"
-            onClick={() => {
-              setReRender(!reRender);
-              handleClose();
-            }}
-          >
-            OK
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
-  );
+        </div>
+        <div style={{ marginTop: "30px" }}>
+          {listMc.map((item) => {
+            return (
+              <>
+                <Card key={item.id}>
+                  <Card.Title>{item.name}</Card.Title>
+                  <Card.Body>
+                    {item.questions.map((q, index) => {
+                      return (
+                        <>
+                          <p>
+                            {index + 1}
+                            {". " + q.questionText}
+                          </p>
+                          {q.options.map((op) => {
+                            return (
+                              <div style={{ marginLeft: "10px" }}>
+                                <input
+                                  type="checkbox"
+                                  onChange={() => handleSelect(q.id, op.id)}
+                                />
+                                <span>{op.optionText}</span>
+                              </div>
+                            );
+                          })}
+                        </>
+                      );
+                    })}
+                  </Card.Body>
+                </Card>
+              </>
+            );
+          })}
+        </div>
+        <Button
+          style={{ margin: "30px" }}
+          onClick={async () => {
+            try {
+              let res = await studentApi.getListFailOptionVocab(
+                answers,
+                lessonId
+              );
+              console.log(res);
+              setResultFail(res);
+              handleShow();
+            } catch (e) {
+              console.log(e);
+            }
+          }}
+        >
+          Nộp nài
+        </Button>
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Những câu sai</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {resultFail?.map((p) => {
+              return (
+                <>
+                  <p style={{ color: "red" }}>
+                    {p.questionText},{" "}
+                    <span style={{ color: "green" }}>
+                      answer: {p.textTrueAnswer}
+                    </span>
+                  </p>
+                </>
+              );
+            })}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="primary"
+              onClick={() => {
+                setReRender(!reRender);
+                handleClose();
+              }}
+            >
+              OK
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    );
+  }
 }

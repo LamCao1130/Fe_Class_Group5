@@ -7,7 +7,7 @@ import { Button, Card, Modal } from "react-bootstrap";
 
 export default function Reading() {
   const { lessonId } = useParams();
-  let [dataReading, setDataReading] = useState();
+  let [dataReading, setDataReading] = useState([]);
 
   const [answers, setAnswers] = useState([]);
   let [resultFail, setResultFail] = useState();
@@ -47,94 +47,104 @@ export default function Reading() {
     });
   };
 
-  return (
-    <>
-      <div>
+  if (dataReading.length === 0) {
+    return (
+      <>
         <HeaderCLassStudent />
         <ExerciseNavBar />
-        {dataReading?.map((item) => {
-          return (
-            <>
-              <Card style={{ marginTop: "30px" }}>
-                <Card.Title>{item.title}</Card.Title>
-                <Card.Body>
-                  <Card.Text>{item.passageContent}</Card.Text>
-                  {item.questions.map((q) => {
-                    return (
-                      <>
-                        <p>{q.questionText}</p>
-                        {q.options.map((op) => {
-                          return (
-                            <>
-                              <input
-                                type="checkbox"
-                                name=""
-                                id=""
-                                onChange={() => handleSelect(q.id, op.id)}
-                              />
-                              <span>{op.optionText}</span>
-                              <br />
-                            </>
-                          );
-                        })}
-                        <br />
-                      </>
-                    );
-                  })}
-                </Card.Body>
-              </Card>
-            </>
-          );
-        })}
-      </div>
-      <Button
-        style={{ margin: "30px" }}
-        onClick={async () => {
-          console.log(answers);
-          try {
-            let res = await studentApi.getListFailOptionReading(
-              answers,
-              lessonId
-            );
-            console.log(res);
-            setResultFail(res);
-            handleShow();
-          } catch (e) {
-            console.log(e);
-          }
-        }}
-      >
-        Nộp nài
-      </Button>
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Những câu sai</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {resultFail?.map((p) => {
+        <h3>Không có bài tập</h3>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <div>
+          <HeaderCLassStudent />
+          <ExerciseNavBar />
+          {dataReading?.map((item) => {
             return (
               <>
-                <p style={{ color: "red" }}>
-                  {p.questionText},{" "}
-                  <span style={{ color: "green" }}>
-                    answer: {p.textTrueAnswer}
-                  </span>
-                </p>
+                <Card style={{ marginTop: "30px" }}>
+                  <Card.Title>{item.title}</Card.Title>
+                  <Card.Body>
+                    <Card.Text>{item.passageContent}</Card.Text>
+                    {item.questions.map((q) => {
+                      return (
+                        <>
+                          <p>{q.questionText}</p>
+                          {q.options.map((op) => {
+                            return (
+                              <>
+                                <input
+                                  type="checkbox"
+                                  name=""
+                                  id=""
+                                  onChange={() => handleSelect(q.id, op.id)}
+                                />
+                                <span>{op.optionText}</span>
+                                <br />
+                              </>
+                            );
+                          })}
+                          <br />
+                        </>
+                      );
+                    })}
+                  </Card.Body>
+                </Card>
               </>
             );
           })}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="primary"
-            onClick={() => {
-              handleClose();
-            }}
-          >
-            OK
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
-  );
+        </div>
+        <Button
+          style={{ margin: "30px" }}
+          onClick={async () => {
+            console.log(answers);
+            try {
+              let res = await studentApi.getListFailOptionReading(
+                answers,
+                lessonId
+              );
+              console.log(res);
+              setResultFail(res);
+              handleShow();
+            } catch (e) {
+              console.log(e);
+            }
+          }}
+        >
+          Nộp nài
+        </Button>
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Những câu sai</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {resultFail?.map((p) => {
+              return (
+                <>
+                  <p style={{ color: "red" }}>
+                    {p.questionText},{" "}
+                    <span style={{ color: "green" }}>
+                      answer: {p.textTrueAnswer}
+                    </span>
+                  </p>
+                </>
+              );
+            })}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="primary"
+              onClick={() => {
+                handleClose();
+              }}
+            >
+              OK
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    );
+  }
 }
