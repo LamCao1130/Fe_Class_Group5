@@ -235,7 +235,10 @@ const ExamQuestion = () => {
         </main>
       </div>
       <Modal show={modal}>
-        <Modal.Body>Bạn có chắc chắn muốn nộp bài</Modal.Body>
+        <Modal.Body>
+          <div>Bạn có chắc chắn muốn nộp bài</div>
+        </Modal.Body>
+
         <Modal.Footer>
           <Button
             onClick={() => {
