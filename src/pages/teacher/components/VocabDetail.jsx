@@ -52,7 +52,6 @@ const VocabDetail = ({ id }) => {
                   <th>Từ loại</th>
                   <th>Nghĩa</th>
                   <th>Phát âm</th>
-                  <th>Ví dụ</th>
                   <th className="" style={{ width: "80px" }}>
                     Hành động
                   </th>
@@ -66,7 +65,6 @@ const VocabDetail = ({ id }) => {
                     <th>{item.wordType}</th>
                     <th>{item.vietnameseMeaning}</th>
                     <th>{item.pronunciation}</th>
-                    <th>{item.exampleSample} </th>
                     <th>
                       <i
                         className="bi bi-pencil"
@@ -120,6 +118,7 @@ const VocabDetail = ({ id }) => {
         show={showEdit}
         setShowEdit={setShowEdit}
         vocabData={updateVocab}
+        handleClose={() => setShowEdit(false)}
         onSave={() => setRender(!render)}
       ></EditVocabModal>
     </div>

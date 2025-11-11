@@ -37,8 +37,10 @@ import QuestionDetail from "../pages/teacher/components/QuestionDetail";
 import ClassRooms from "../pages/admin/pages/ClassRooms";
 import ClassRoomDetail from "../pages/admin/pages/ClassRoomDetail";
 import ResetPassword from "../components/ResetPassword";
+import ExamAttempHistory from "../pages/teacher/pages/ExamAttempHistory";
+import ExamQuestion from "../pages/student/pages/ExamQuestion";
 let router = createBrowserRouter([
-  {path:"/resetPassword",element:<ResetPassword />},
+  { path: "/resetPassword", element: <ResetPassword /> },
   {
     path: "/fail403",
     element: <Fail403 />,
@@ -66,12 +68,20 @@ let router = createBrowserRouter([
         element: <HomePage />,
       },
       {
+        path: "profile",
+        element: <ProfilePage></ProfilePage>,
+      },
+      {
         path: "lesson/:id/addvocab",
         element: <AddVocab />,
       },
       {
         path: "lesson/:id/addQuestion",
         element: <AddQuestion></AddQuestion>,
+      },
+      {
+        path: "classroom/:id/examAttempt",
+        element: <ExamAttempHistory></ExamAttempHistory>,
       },
       {
         path: "exam/:id",
@@ -116,7 +126,7 @@ let router = createBrowserRouter([
     ),
     children: [
       // { path: "homepage", element: <HomePageStudent /> },
-
+      { path: "doExam/:id", element: <ExamQuestion></ExamQuestion> },
       { path: "classroom", element: <ClassRoomList /> },
       { path: "profileStudent", element: <ProfilePage /> },
       { path: "classroom/:classRoomId", element: <LessonList /> },
@@ -174,7 +184,7 @@ let router = createBrowserRouter([
       { path: "student", element: <Students /> },
       { path: "student/:id", element: <StudentDetail /> },
       { path: "classrooms", element: <ClassRooms /> },
-      { path: "classrooms/:id", element: <ClassRoomDetail/>},
+      { path: "classrooms/:id", element: <ClassRoomDetail /> },
     ],
   },
 ]);

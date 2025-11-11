@@ -101,5 +101,22 @@ let studentApi = {
     );
     return res.data;
   },
+  getListQuestionByExam: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/Question/exam/manage/${id}`
+    );
+    return res.data;
+  },
+  getPoint: async (data) => {
+    let res = await axiosApi.post(
+      `http://localhost:8080/api/v1/exam/getPoint`,
+      data
+    );
+    return res.data;
+  },
+  getExam: async (id) => {
+    let res = await axiosApi.get(`http://localhost:8080/api/v1/exam/${id}`);
+    return res.data;
+  },
 };
 export default studentApi;

@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { Card, Button } from "react-bootstrap";
+import { useNavigate } from "react-router";
 
 // Hàm chọn gradient ngẫu nhiên
 function getRandomGradient() {
@@ -17,14 +18,9 @@ function getRandomGradient() {
   return gradients[Math.floor(Math.random() * gradients.length)];
 }
 
-export default function ExamCard({
-  id,
-  title,
-  description,
-  durationMinutes,
-}) {
+export default function ExamCard({ id, title, description, durationMinutes }) {
   const gradient = useMemo(() => getRandomGradient(), []);
-
+  const navigate = useNavigate();
   return (
     <Card
       className="border-0 shadow-sm h-100"
@@ -52,12 +48,14 @@ export default function ExamCard({
       ></div>
 
       <Card.Body className="text-center">
-        <Card.Title className="fw-bold text-dark mt-2">Exam: {title}</Card.Title>
+        <Card.Title className="fw-bold text-dark mt-2">
+          Exam: {title}
+        </Card.Title>
         <Card.Text className="text-muted small mb-3">
-         Miêu tả:  {description || "Không có mô tả."}
+          Miêu tả: {description || "Không có mô tả."}
         </Card.Text>
         <Card.Text className="text-muted small mb-3">
-         Time:  {durationMinutes || "Không có mô tả."} phút
+          Time: {durationMinutes || "Không có mô tả."} phút
         </Card.Text>
 
         <Button
@@ -67,6 +65,7 @@ export default function ExamCard({
             background: gradient,
             border: "none",
           }}
+          onClick={() => navigate(`/student/doExam/${id}`)}
         >
           Làm Bài
         </Button>

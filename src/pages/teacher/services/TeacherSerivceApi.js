@@ -171,5 +171,18 @@ let teacherService = {
     );
     return res.data;
   },
+  getExamAttemptByClassroom: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/exam/classroom/${id}/examHistory`
+    );
+    return res.data;
+  },
+  createVocab: async (data) => {
+    let res = await axiosApi.post(
+      `http://localhost:8080/api/v1/vocab/create`,
+      data
+    );
+    return res.data;
+  },
 };
 export default teacherService;

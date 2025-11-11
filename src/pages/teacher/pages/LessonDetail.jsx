@@ -9,45 +9,38 @@ import {
   ListGroup,
   Nav,
   Navbar,
-  ToastContainer,
 } from "react-bootstrap";
 import VocabDetail from "../components/VocabDetail";
 import GrammarDetail from "../components/GrammarDetail";
 import QuestionDetail from "../components/QuestionDetail";
 import AddGrammarModal from "../components/AddGrammarModal";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 const LessonDetail = () => {
   const { id } = useParams();
 
+  const [render, setRender] = useState(false);
   const [activeTab, setActiveTab] = useState("vocab");
 
   const [showAddGrammar, setShowAddGrammar] = useState(false);
 
   const navigate = useNavigate();
 
-
-  const [questionList, setQuestionList] = useState([]);
-  const [message, setMessage] = useState({
-    message: "",
-    type: "",
-  });
-
+  const [message, setMessage] = useState();
   useEffect(() => {
-    if (message.message && toast[message.type]) {
-      const normalizedType = message.type.toLowerCase();
-      toast[normalizedType](message.message);
-      setMessage({ message: "", type: "" });
-    }
+    toast.success(message);
   }, [message]);
-
+  console.log(message);
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+      />
       <Navbar bg="primary" variant="dark" className="mb-4 shadow-sm">
         <Container>
-          <Navbar.Brand className="fw-bold">
-            Bài Học Chi Tiết (ID: {id})
-          </Navbar.Brand>
+          <Navbar.Brand className="fw-bold"></Navbar.Brand>
           <Button
             variant="warning"
             onClick={() => navigate(`/teacher/lesson/${id}/historySubmit`)}
@@ -124,9 +117,10 @@ const LessonDetail = () => {
 
         <AddGrammarModal
           type={"Thêm mới"}
-          setMessage={setMessage}
+          setMessage={() => setMessage("Add grammar success")}
           showGrammar={showAddGrammar}
           handleClose={() => setShowAddGrammar(false)}
+          onSave={() => setRender(!render)}
         />
       </Container>
     </>
