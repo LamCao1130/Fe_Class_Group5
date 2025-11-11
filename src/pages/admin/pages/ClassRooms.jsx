@@ -302,7 +302,7 @@ const ClassRooms = () => {
                             <Form.Label>Teacher</Form.Label>
                             <Typeahead
                                 id='teacher-typeahead'
-                                labelKey={'fullName'}
+                                labelKey={'email'}
                                 minLength={1}
                                 options={teachers}
                                 filterBy={(option, prop) => {
