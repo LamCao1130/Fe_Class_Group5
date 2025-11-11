@@ -1,7 +1,12 @@
 import Item from "antd/es/list/Item";
 import React, { useState } from "react";
 import { Button, Table } from "react-bootstrap";
-const INITIAL_ROW = {
+import { Modal } from "antd";
+import teacherService from "../services/TeacherSerivceApi";
+import { ca } from "zod/v4/locales";
+import { useParams } from "react-router";
+
+const initialRowDefault = {
   EnglishWord: "",
   type: "",
   vietnamese: "",
@@ -9,10 +14,38 @@ const INITIAL_ROW = {
   example: "",
 };
 const AddVocab = () => {
-  const [newword, setNewword] = useState([INITIAL_ROW]);
+  let { id } = useParams();
+  const [isModalOpenImport, setIsModalOpenImport] = useState(false);
+
+  const [file, setFile] = useState(null);
+
+  const showModalImport = () => {
+    setIsModalOpenImport(true);
+  };
+
+  const handleOkImport = async () => {
+    if (file) {
+      try {
+        let res = await teacherService.importVocab(file, id);
+        console.log("File uploaded successfully:", res);
+      } catch (error) {
+        console.log("Error uploading file:", error);
+      }
+    }
+    setIsModalOpenImport(false);
+  };
+
+  const handleCancelImport = () => {
+    setIsModalOpenImport(false);
+  };
+  const [initailaRow, setInitialRow] = useState({ ...initialRowDefault });
+  const [newword, setNewword] = useState([initialRowDefault]);
   const [submited, setsubmited] = useState(false);
   const handleAddRow = () => {
-    setNewword([...newword, { ...INITIAL_ROW }]);
+    let newList = [...newword];
+    newList.push(initialRowDefault);
+    console.log(newList);
+    setNewword(newList);
   };
   const handleDeleteRow = (row) => {
     const list = [...newword];
@@ -22,14 +55,14 @@ const AddVocab = () => {
   const handleInputChange = (index, event) => {
     const { name, value } = event.target;
 
-    const list = [...newword];
+    const list = newword.map((item) => ({ ...item }));
 
     list[index][name] = value;
 
     setNewword(list);
   };
   const handleSubmit = () => {
-    console.log(1);
+    console.log("List check:", newword);
     setsubmited(true);
     const isAnyFieldEmpty = newword.some(
       (word) =>
@@ -50,13 +83,30 @@ const AddVocab = () => {
   return (
     <div>
       <div className="d-flex justify-content-between mb-3 mx-1 mt-2">
-        <h2>New Vocabuary</h2>
-        <button
+        <h2>New Vocabulary</h2>
+        <Button type="primary" onClick={showModalImport}>
+          Import from Excel
+        </Button>
+        <Modal
+          title="Basic Modal"
+          closable={{ "aria-label": "Custom Close Button" }}
+          open={isModalOpenImport}
+          onOk={handleOkImport}
+          onCancel={handleCancelImport}
+        >
+          <input
+            type="file"
+            name=""
+            id=""
+            onChange={(e) => setFile(e.target.files[0])}
+          />
+        </Modal>
+        <Button
           onClick={() => handleAddRow()}
           className="border border-none  bg-primary"
         >
           Create new{" "}
-        </button>
+        </Button>
       </div>
       <Table striped bordered hover>
         <thead>
@@ -85,7 +135,7 @@ const AddVocab = () => {
                     className={englishIsInvalid && submited ? "bg-danger" : ""}
                     type="text"
                     name="EnglishWord"
-                    value={item.EnglishWord}
+                    // value={item.EnglishWord}
                     onChange={(e) => handleInputChange(index, e)}
                   />
                 </td>
@@ -95,7 +145,7 @@ const AddVocab = () => {
                     type="text"
                     name="type"
                     onChange={(e) => handleInputChange(index, e)}
-                    value={item.type}
+                    // value={item.type}
                   />
                 </td>{" "}
                 <td>
@@ -106,7 +156,7 @@ const AddVocab = () => {
                     }
                     name="vietnamese"
                     onChange={(e) => handleInputChange(index, e)}
-                    value={item.vietnamese}
+                    // value={item.vietnamese}
                   />
                 </td>{" "}
                 <td>
@@ -117,7 +167,7 @@ const AddVocab = () => {
                     type="text"
                     name="pnonounciation"
                     onChange={(e) => handleInputChange(index, e)}
-                    value={item.pnonounciation}
+                    // value={item.pnonounciation}
                   />
                 </td>{" "}
                 <td>
@@ -126,7 +176,7 @@ const AddVocab = () => {
                     className={exampleInvalid && submited ? "bg-danger" : ""}
                     name="example"
                     onChange={(e) => handleInputChange(index, e)}
-                    value={item.example}
+                    // value={item.example}
                   />
                 </td>
                 <td>

@@ -42,3 +42,7 @@
   border: 1px solid grey;
   outline: none;
 }
+
+i {
+  cursor: pointer;
+}

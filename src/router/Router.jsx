@@ -14,9 +14,26 @@ import AdminLayout from "../pages/admin/pages/AdminLayout";
 import Dashboard from "../pages/admin/pages/Dashboard";
 import Teachers from "../pages/admin/pages/Teachers";
 import TeacherDetail from "../pages/admin/pages/TeacherDetail";
+import Students from "../pages/admin/pages/Students";
 import StudentProtectRouter from "./StudentProtectRouter";
 import AdminProtectedRouter from "./AdminProtectedRouter";
+import StudentDetail from "../pages/admin/pages/StudentDetail";
 import AddVocab from "../pages/teacher/pages/AddVocab";
+import MainLayout from "../pages/student/pages/MainLayout";
+import ClassRoomList from "../pages/student/pages/ClassRoomList";
+import ProfilePage from "../pages/student/pages/ProfilePage";
+import HeaderCLassStudent from "../pages/student/components/HeaderCLassStudent";
+import LessonDetail from "../pages/teacher/pages/LessonDetail";
+import AddQuestion from "../pages/teacher/pages/AddQuestion";
+import LessonList from "../pages/student/pages/LessonList";
+import ExamList from "../pages/student/pages/ExamList";
+import ViewVocab from "../pages/student/pages/ViewVocab";
+import Vocabulary from "../pages/student/components/Vocabulary";
+import Reading from "../pages/student/components/Reading";
+import Listening from "../pages/student/components/Listening";
+import Writting from "../pages/student/components/Writting";
+import SubmissionHistory from "../pages/student/pages/SubmitionHistory";
+import QuestionDetail from "../pages/teacher/components/QuestionDetail";
 import ClassRooms from "../pages/admin/pages/ClassRooms";
 import ClassRoomDetail from "../pages/admin/pages/ClassRoomDetail";
 let router = createBrowserRouter([
@@ -43,12 +60,32 @@ let router = createBrowserRouter([
     ),
     children: [
       {
-        path: "", // ROUTE CON: Khi URL là /teacher
+        path: "",
         element: <HomePage />,
       },
       {
-        path: "addvocab",
+        path: "lesson/:id/addvocab",
         element: <AddVocab />,
+      },
+      {
+        path: "lesson/:id/addQuestion",
+        element: <AddQuestion></AddQuestion>,
+      },
+      {
+        path: "exam/:id",
+        element: <QuestionDetail></QuestionDetail>,
+      },
+      {
+        path: "exam/:id/addQuestion",
+        element: <AddQuestion></AddQuestion>,
+      },
+      {
+        path: "lesson/:id",
+        element: <LessonDetail></LessonDetail>,
+      },
+      {
+        path: "lesson/:id/historySubmit",
+        element: <SubmissionHistory></SubmissionHistory>,
       },
       {
         path: "manageClass/:id",
@@ -60,9 +97,10 @@ let router = createBrowserRouter([
         children: [
           {
             path: "",
-            element: <ClassDetail></ClassDetail>,
+            element: <ClassDetail />,
           },
           { path: "list", element: <ListStudent></ListStudent> },
+          ,
         ],
       },
     ],
@@ -71,16 +109,54 @@ let router = createBrowserRouter([
     path: "/student",
     element: (
       <StudentProtectRouter>
-        <HeaderStudent />
+        <MainLayout />
       </StudentProtectRouter>
     ),
-    errorElement: <Fail403 />,
     children: [
+      // { path: "homepage", element: <HomePageStudent /> },
+
+      { path: "classroom", element: <ClassRoomList /> },
+      { path: "profileStudent", element: <ProfilePage /> },
+      { path: "classroom/:classRoomId", element: <LessonList /> },
+      { path: "classroom/:classRoomId/exam", element: <ExamList /> },
+      { path: "vocab/:lessionId", element: <ViewVocab /> },
       {
-        path: "homepage",
-        element: <HomePageStudent />,
+        path: "history/:lessionId",
+        element: <SubmissionHistory></SubmissionHistory>,
       },
     ],
+  },
+  {
+    path: "/student/doExercise/:lessonId/mcAndFill",
+    element: (
+      <StudentProtectRouter>
+        <Vocabulary />
+      </StudentProtectRouter>
+    ),
+  },
+  {
+    path: "/student/doExercise/:lessonId/reading",
+    element: (
+      <StudentProtectRouter>
+        <Reading />
+      </StudentProtectRouter>
+    ),
+  },
+  {
+    path: "/student/doExercise/:lessonId/listening",
+    element: (
+      <StudentProtectRouter>
+        <Listening />
+      </StudentProtectRouter>
+    ),
+  },
+  {
+    path: "/student/doExercise/:lessonId/writting",
+    element: (
+      <StudentProtectRouter>
+        <Writting />
+      </StudentProtectRouter>
+    ),
   },
   {
     path: "/admin",
@@ -90,13 +166,15 @@ let router = createBrowserRouter([
       </AdminProtectedRouter>
     ),
     children: [
-      { index: true, element: <Navigate to="dashboard" replace /> },
       { path: "dashboard", element: <Dashboard /> },
       { path: "teachers", element: <Teachers /> },
       { path: "teachers/:id", element: <TeacherDetail /> },
+      { path: "student", element: <Students /> },
+      { path: "student/:id", element: <StudentDetail /> },
       { path: "classrooms", element: <ClassRooms /> },
       { path: "classrooms/:id", element: <ClassRoomDetail/>},
     ],
   },
 ]);
+
 export default router;

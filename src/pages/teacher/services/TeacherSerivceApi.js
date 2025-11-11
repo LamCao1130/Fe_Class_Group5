@@ -19,5 +19,157 @@ let teacherService = {
     );
     return res.data;
   },
+  getVocabByLessonId: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/vocab/lesson/${id}`
+    );
+    return res.data;
+  },
+  getGrammrByLessonId: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/grammar/get-by-lesson/${id}`
+    );
+    return res.data;
+  },
+  editVocab: async (data) => {
+    let res = await axiosApi.put(
+      `http://localhost:8080/api/v1/vocab/update`,
+      data
+    );
+    return res.data;
+  },
+  deleteVocab: async (id) => {
+    let res = await axiosApi.delete(
+      `http://localhost:8080/api/v1/vocab/delete/${id}`
+    );
+    return res.data;
+  },
+
+  createQuestion: async (data) => {
+    let res = await axiosApi.post(
+      "http://localhost:8080/api/v1/Question/create",
+      data
+    );
+    return res.data;
+  },
+  importVocab: async (file, lessonId) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("lessonId", lessonId);
+    let res = await axiosApi.post(
+      "http://localhost:8080/api/v1/vocab/import",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return res;
+  },
+  getQuestion: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/Question/lesson/${id}`
+    );
+    return res.data;
+  },
+  deleteListQuestionByQuestionType: async (id) => {
+    let res = await axiosApi.delete(
+      `http://localhost:8080/api/v1/Question/deleteByQuestionType/${id}`
+    );
+    return res.data;
+  },
+  deletedListeningPassage: async (id) => {
+    let res = await axiosApi.delete(
+      `http://localhost:8080/api/v1/Question/delete/listening/${id}`
+    );
+  },
+  deleteReadingPassage: async (id) => {
+    let res = await axiosApi.delete(
+      `http://localhost:8080/api/v1/Question/delete/reading/${id}`
+    );
+    return res.data;
+  },
+  getQuestionType: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/Question/questionType/${id}`
+    );
+    return res.data;
+  },
+  updateQuestionType: async (data) => {
+    let res = await axiosApi.put(
+      `http://localhost:8080/api/v1/Question/update`,
+      data
+    );
+    return res.data;
+  },
+  createLesson: async (data) => {
+    let res = await axiosApi.post(
+      `http://localhost:8080/api/v1/lessons/create`,
+      data
+    );
+    return res.data;
+  },
+  createGrammar: async (data) => {
+    let res = await axiosApi.post(
+      `http://localhost:8080/api/v1/grammar/create`,
+      data
+    );
+    return res.data;
+  },
+  updateGrammar: async (data) => {
+    let res = await axiosApi.put(
+      `http://localhost:8080/api/v1/grammar/update`,
+      data
+    );
+    return res.data;
+  },
+  deleteGrammar: async (id) => {
+    let res = await axiosApi.delete(
+      `http://localhost:8080/api/v1/grammar/delete/${id}`
+    );
+    return res.data;
+  },
+  getGrammar: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/grammar/get/${id}`
+    );
+    return res.data;
+  },
+  getHistory: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/Question/${id}/submissionHistory`
+    );
+    return res.data;
+  },
+  createExam: async (data) => {
+    let res = await axiosApi.post(
+      `http://localhost:8080/api/v1/exam/create`,
+      data
+    );
+    return res.data;
+  },
+  getExam: async (id) => {
+    let res = await axiosApi.get(`http://localhost:8080/api/v1/exam/${id}`);
+    return res.data;
+  },
+  getExamByClassroom: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/exam/get-by-classRoomId/${id}`
+    );
+    return res.data;
+  },
+  getQuestionByExam: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/Question/exam/manage/${id}`
+    );
+    return res.data;
+  },
+  getComingExam: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/exam/comingTest/${id}`
+    );
+    return res.data;
+  },
 };
 export default teacherService;

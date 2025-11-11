@@ -1,0 +1,98 @@
+.page {
+  padding: 24px;
+}
+
+.pageTitle {
+  font-size: 34px;
+  font-weight: 700;
+  color: #1f2937; /* dark */
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.searchGroup {
+  width: 360px;
+  box-shadow: 0 1px 4px rgba(16,24,40,0.06);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.createBtn {
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
+.cardTable {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.studentTable thead th {
+  font-weight: 700;
+  color: #111827;
+  background: #f8fafc; /* light header */
+}
+
+.studentTable tbody tr:nth-child(odd) {
+  background: #f3f4f6;
+}
+
+.studentTable tbody tr:hover {
+  background: #eef2ff;
+}
+
+.fw-medium {
+  font-weight: 600;
+}
+
+.actionsWrap {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.btnIcon {
+  width: 38px;
+  height: 38px;
+  padding: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+}
+
+.btnEdit {
+  border: 1px solid #f59e0b; /* amber */
+  color: #92400e;
+  background: #fffbe6;
+}
+
+.btnDelete {
+  border: 1px solid #ef4444; /* red */
+  color: #7f1d1d;
+  background: #fff1f2;
+}
+
+.statusActive {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.paginationCustom .page-item.active .page-link {
+  background-color: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+  border-radius: 6px;
+}
+
+.paginationCustom .page-link {
+  color: #374151;
+}
+
+.summaryText {
+  color: #6b7280;
+}

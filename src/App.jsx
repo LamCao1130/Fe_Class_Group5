@@ -334,7 +334,7 @@ function App() {
                   if (decoded.role === "TEACHER") {
                     navigate("/teacher");
                   } else if (decoded.role === "STUDENT") {
-                    navigate("/student/homepage");
+                    navigate("/student/classroom");
                   } else if (decoded.role === "ADMIN") {
                     navigate("/admin/dashboard");
                   }

@@ -9,7 +9,7 @@ export default function RouterPrivate({ children }) {
     const decoded = jwtDecode(localStorage.getItem("accessToken"));
     if (decoded.role === "TEACHER") return <Navigate to="/teacher" replace />;
     else if (decoded.role === "STUDENT")
-      return <Navigate to="/student/homepage" replace />;
+      return <Navigate to="/student/classroom" replace />;
     else if (decoded.role === "ADMIN") return <Navigate to="/admin" replace />;
     else {
       return <Navigate to="/fail403" replace />;
