@@ -5,7 +5,7 @@ import {
   getProfileApi,
   updateProfileApi,
 } from "../studentApi/profileStudentApi";
-import { ToastContainer,toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const ProfilePage = () => {
   const [user, setUser] = useState({});
@@ -68,7 +68,7 @@ const ProfilePage = () => {
 
   const handlePasswordSave = async () => {
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-       toast.error("Mật khẩu xác nhận không khớp!");
+      toast.error("Mật khẩu xác nhận không khớp!");
       return;
     }
     try {
@@ -77,15 +77,18 @@ const ProfilePage = () => {
         newPassword: passwordForm.newPassword,
         confirmPassword: passwordForm.confirmPassword,
       });
-       toast.success("Đổi mật khẩu thành công!");
+      toast.success("Đổi mật khẩu thành công!");
       setShowPasswordModal(false);
     } catch (error) {
-       toast.error(error.message || "Đổi mật khẩu thất bại!");
+      toast.error(error.message || "Đổi mật khẩu thất bại!");
     }
   };
 
   return (
-    <div className="p-4" style={{ backgroundColor: "#f8f9fa", minHeight: "100vh" }}>
+    <div
+      className="p-4"
+      style={{ backgroundColor: "#f8f9fa", minHeight: "100vh" }}
+    >
       <Card
         className="shadow-lg p-4 border-0 rounded-4"
         style={{ maxWidth: "800px", margin: "0 auto" }}
@@ -93,18 +96,42 @@ const ProfilePage = () => {
         <Row className="align-items-center">
           <Col md={8}>
             <h3 className="fw-bold text-primary mb-3">{user.fullName}</h3>
-            <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>Số Điện Thoại:</strong> {user.phoneNumber}</p>
-            <p><strong>Địa Chỉ:</strong> {user.address}</p>
-            <p><strong>Ngày Sinh:</strong> {user.dateOfBirth}</p>
+            <p>
+              <strong>Email:</strong> {user.email}
+            </p>
+            <p>
+              <strong>Số Điện Thoại:</strong> {user.phoneNumber}
+            </p>
+            <p>
+              <strong>Địa Chỉ:</strong> {user.address}
+            </p>
+            <p>
+              <strong>Ngày Sinh:</strong> {user.dateOfBirth}
+            </p>
             <div className="mt-3">
-              <Button variant="primary" className="me-2" onClick={handleShowEdit}>
+              <Button
+                variant="primary"
+                className="me-2"
+                onClick={handleShowEdit}
+              >
                 Chỉnh sửa hồ sơ
               </Button>
-              <Button variant="warning" className="me-2" onClick={handleShowPasswordModal}>
+              <Button
+                variant="warning"
+                className="me-2"
+                onClick={handleShowPasswordModal}
+              >
                 Đổi mật khẩu
               </Button>
-              <Button variant="outline-danger">Đăng xuất</Button>
+              <Button
+                variant="outline-danger"
+                onClick={() => {
+                  localStorage.clear();
+                  window.location.reload();
+                }}
+              >
+                Đăng xuất
+              </Button>
             </div>
           </Col>
         </Row>
@@ -170,13 +197,21 @@ const ProfilePage = () => {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseEdit}>Hủy</Button>
-          <Button variant="primary" onClick={handleSave}>Lưu thay đổi</Button>
+          <Button variant="secondary" onClick={handleCloseEdit}>
+            Hủy
+          </Button>
+          <Button variant="primary" onClick={handleSave}>
+            Lưu thay đổi
+          </Button>
         </Modal.Footer>
       </Modal>
 
       {/* MODAL ĐỔI MẬT KHẨU */}
-      <Modal show={showPasswordModal} onHide={handleClosePasswordModal} centered>
+      <Modal
+        show={showPasswordModal}
+        onHide={handleClosePasswordModal}
+        centered
+      >
         <Modal.Header closeButton>
           <Modal.Title>Đổi mật khẩu</Modal.Title>
         </Modal.Header>

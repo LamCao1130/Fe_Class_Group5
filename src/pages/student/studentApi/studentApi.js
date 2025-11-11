@@ -95,5 +95,11 @@ let studentApi = {
     );
     return res.data;
   },
+  getGrammarByLesson: async (id) => {
+    let res = await axiosApi.get(
+      `http://localhost:8080/api/v1/grammar/get-by-lesson/${id}`
+    );
+    return res.data;
+  },
 };
 export default studentApi;

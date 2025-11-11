@@ -5,6 +5,8 @@ import { Modal } from "antd";
 import teacherService from "../services/TeacherSerivceApi";
 import { ca } from "zod/v4/locales";
 import { useParams } from "react-router";
+import axiosApi from "../../../components/AxiosApi";
+import { ToastContainer, toast } from "react-toastify";
 
 const initialRowDefault = {
   EnglishWord: "",
@@ -27,9 +29,9 @@ const AddVocab = () => {
     if (file) {
       try {
         let res = await teacherService.importVocab(file, id);
-        console.log("File uploaded successfully:", res);
+        toast.success("tạo thành công");
       } catch (error) {
-        console.log("Error uploading file:", error);
+        toast.error("tạo thất bại");
       }
     }
     setIsModalOpenImport(false);
@@ -61,6 +63,34 @@ const AddVocab = () => {
 
     setNewword(list);
   };
+
+  const downloadExcel = async () => {
+    try {
+      const response = await axiosApi.get(
+        "http://localhost:8080/api/v1/vocab/export-demo",
+        {
+          responseType: "blob", // BẮT BUỘC
+        }
+      );
+
+      // Tạo file blob từ response
+      const file = new Blob([response.data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      const fileURL = URL.createObjectURL(file);
+
+      // Tạo thẻ <a> để download
+      const link = document.createElement("a");
+      link.href = fileURL;
+      link.download = "vocabulary.xlsx";
+      link.click();
+
+      URL.revokeObjectURL(fileURL);
+    } catch (error) {
+      console.error("Lỗi khi tải file:", error);
+    }
+  };
   const handleSubmit = () => {
     console.log("List check:", newword);
     setsubmited(true);
@@ -82,18 +112,23 @@ const AddVocab = () => {
   };
   return (
     <div>
+      <ToastContainer position="top-right" autoClose={3000} />
       <div className="d-flex justify-content-between mb-3 mx-1 mt-2">
         <h2>New Vocabulary</h2>
         <Button type="primary" onClick={showModalImport}>
           Import from Excel
         </Button>
         <Modal
-          title="Basic Modal"
+          title="Import file excel"
           closable={{ "aria-label": "Custom Close Button" }}
           open={isModalOpenImport}
           onOk={handleOkImport}
           onCancel={handleCancelImport}
         >
+          <Button onClick={downloadExcel}>Tải file mẫu</Button>
+          <p style={{ color: "red" }}>
+            * Yêu cầu thầy/cô tạo file giống file mẫu
+          </p>
           <input
             type="file"
             name=""
