@@ -18,12 +18,13 @@ export default function ResetPassword() {
           borderRadius: "15px",
         }}
         placeholder="Nhập email của bạn"
-        onChange={(e)=>setEmail(e.target.value)}
+        onChange={(e) => setEmail(e.target.value)}
       />
+      <br />
       <Button
         onClick={async () => {
           try {
-            await axiosApi.post("/auth/reset-password",{email:email});
+            await axiosApi.post("/auth/reset-password", { email: email });
             toast.success("Mã đặt lại mật khẩu đã được gửi đến email của bạn.");
           } catch (e) {
             toast.error("Gửi mã thất bại. Vui lòng kiểm tra lại email.");
