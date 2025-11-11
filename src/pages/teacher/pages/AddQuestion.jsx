@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Card,
@@ -23,6 +23,8 @@ const partTypes = [
 ];
 
 const AddQuestion = () => {
+  const params = new URLSearchParams(location.search);
+  const isExam = params.get("mode") == "exam";
   const navigate = useNavigate();
   const lessonId = useParams();
   const [partTitle, setPartTitle] = useState("");
@@ -31,11 +33,14 @@ const AddQuestion = () => {
     title: "",
     passageContent: "",
   });
+
+  const [newPartType, serNewPartType] = useState([]);
   const [listening, setListening] = useState({
     scriptText: "",
     title: "",
     passage_type: "long",
   });
+
   const [questions, setQuestions] = useState([
     {
       text: "",
@@ -44,6 +49,15 @@ const AddQuestion = () => {
       correctAnswers: [],
     },
   ]);
+
+  useEffect(() => {
+    if (isExam) {
+      const filtered = partTypes.filter(
+        (item) => item.value === "reading" || item.value === "mc"
+      );
+      serNewPartType(filtered);
+    }
+  }, [isExam]);
   const [alert, setAlert] = useState({ show: false, msg: "", variant: "" });
   const addQuestion = () => {
     setQuestions([
@@ -165,6 +179,7 @@ const AddQuestion = () => {
       toast.error("Vui lòng điền đầy đủ thông tin đoạn listening");
       return;
     }
+    const typeId = isExam ? `examId` : `lessonId`;
     const validQuestions = questions
       .map((q) => {
         if (!q.text.trim()) return null;
@@ -175,7 +190,7 @@ const AddQuestion = () => {
             questionText: q.text,
             type: partType,
             correctAnswer: q.fillAnswer.trim(),
-            lessonId: lessonId.id,
+            [typeId]: lessonId.id,
           };
         }
 
@@ -187,7 +202,7 @@ const AddQuestion = () => {
               type: partType,
               listeningText: q.listeningText,
               correctAnswer: q.fillAnswer.trim(),
-              lessonId: lessonId.id,
+              [typeId]: lessonId.id,
             };
           }
         }
@@ -196,7 +211,7 @@ const AddQuestion = () => {
             questionText: q.text,
             type: partType,
             correctAnswer: "",
-            lessonId: lessonId.id,
+            [typeId]: lessonId.id,
           };
         }
 
@@ -243,7 +258,7 @@ const AddQuestion = () => {
 
     const createQuestion = {
       questionTypeDto: {
-        lessonId: lessonId.id,
+        [typeId]: lessonId.id,
         name: partTitle,
         type: partType,
         questions: validQuestions,
@@ -256,7 +271,10 @@ const AddQuestion = () => {
     await teacherService.createQuestion(createQuestion);
     toast.success("Create question success");
     setTimeout(() => {
-      navigate(`/teacher/lesson/${lessonId.id}`);
+      if (!isExam) navigate(`/teacher/lesson/${lessonId.id}`);
+      else {
+        navigate(`/teacher/exam/${lessonId.id}?mode=exam`);
+      }
     }, 300);
     setPartTitle("");
     setPartType("fill");
@@ -324,11 +342,17 @@ const AddQuestion = () => {
                       );
                     }}
                   >
-                    {partTypes.map((t) => (
-                      <option key={t.value} value={t.value}>
-                        {t.label}
-                      </option>
-                    ))}
+                    {isExam
+                      ? newPartType.map((t) => (
+                          <option key={t.value} value={t.value}>
+                            {t.label}
+                          </option>
+                        ))
+                      : partTypes.map((t) => (
+                          <option key={t.value} value={t.value}>
+                            {t.label}
+                          </option>
+                        ))}
                   </Form.Select>
                 </Form.Group>
 

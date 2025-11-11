@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Container, Table, Badge, Card, Button, Form } from "react-bootstrap";
+import {
+  Container,
+  Table,
+  Badge,
+  Card,
+  Button,
+  Form,
+  Navbar,
+  Nav,
+} from "react-bootstrap";
 import studentApi from "../studentApi/studentApi";
 import { useParams } from "react-router";
 
@@ -22,25 +31,40 @@ const SubmissionHistory = () => {
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fakeSubmission, setFakeSubmission] = useState();
-  const { lessionId } = useParams();
-  const [filterType, setFilterType] = useState();
-
+  const { id } = useParams();
+  const [filterType, setFilterType] = useState("All");
+  const [activeTab, setActiveTab] = useState("All");
+  const [searchKeyword, setSearchKeyword] = useState("");
   useEffect(() => {
     const fetchData = async () => {
-      const res = await studentApi.getListSubmitionHistoryByLesson(lessionId);
+      const res = await studentApi.getListSubmitionHistoryByLesson(id);
       setSubmissions(res);
       setFakeSubmission(res);
+      console.log(res);
     };
     setLoading(false);
     fetchData();
   }, []);
 
-  const handleChange = (value) => {
-    setFilterType(value);
-    if (value != "all")
-      setSubmissions(fakeSubmission.filter((item) => item.type == value));
-    else {
-      setSubmissions(fakeSubmission);
+  const handleChange = (key, value) => {
+    if (key == "Status") {
+      setActiveTab(value);
+      setSubmissions(
+        fakeSubmission.filter(
+          (item) =>
+            (filterType != "All" ? item.type == filterType : true) &&
+            (value != "All" ? item.status == value : true)
+        )
+      );
+    } else if (key == "type") {
+      setFilterType(value);
+      setSubmissions(
+        fakeSubmission.filter(
+          (item) =>
+            (value != "All" ? item.type == value : true) &&
+            (activeTab != "All" ? item.status == activeTab : true)
+        )
+      );
     }
   };
 
@@ -64,6 +88,16 @@ const SubmissionHistory = () => {
     } catch (e) {
       console.error("Lỗi định dạng ngày:", e);
       return "Ngày không hợp lệ";
+    }
+  };
+
+  const handleSearch = (e) => {
+    if (e == "Enter") {
+      setSubmissions(
+        fakeSubmission.filter((item) =>
+          item.studentName.toLowerCase().includes(searchKeyword.toLowerCase())
+        )
+      );
     }
   };
 
@@ -100,15 +134,61 @@ const SubmissionHistory = () => {
 
   return (
     <Container className="mt-4">
-      <Card>
-        <div className="d-flex justify-content-between">
-          <Card.Header as="h3"> Lịch Sử Nộp Bài</Card.Header>
+      <h1 className="mb-4"> Lịch Sử Nộp Bài</h1>
+      <Navbar bg="primary" variant="dark">
+        <Navbar.Brand className="fw-bold"></Navbar.Brand>
+        <Navbar.Toggle />
+        <Navbar.Collapse>
+          <Nav className="me-auto">
+            <Nav.Link
+              onClick={(e) => {
+                handleChange("Status", "All");
+              }}
+              active={activeTab === "All"}
+              className="fw-medium"
+            >
+              All
+            </Nav.Link>
+            <Nav.Link
+              onClick={() => {
+                handleChange("Status", "Done");
+              }}
+              active={activeTab === "Done"}
+              className="fw-medium"
+            >
+              Done
+            </Nav.Link>
+            <Nav.Link
+              onClick={() => {
+                handleChange("Status", "Late");
+              }}
+              active={activeTab === "Late"}
+              className="fw-medium"
+            >
+              Late
+            </Nav.Link>
+            <Nav.Link
+              onClick={() => {
+                handleChange("Status", "Missing");
+              }}
+              active={activeTab === "Missing"}
+              className="fw-medium"
+            >
+              Missing
+            </Nav.Link>
+          </Nav>
+        </Navbar.Collapse>{" "}
+      </Navbar>
+      <Card className="mt-3">
+        <div className="d-flex justify-content-between mt-3 mx-3">
           <Form.Select
             style={{ width: "20%" }}
             value={filterType}
-            onChange={(e) => handleChange(e.target.value)}
+            onChange={(e) => {
+              handleChange("type", e.target.value);
+            }}
           >
-            <option value="all">Tất Cả Các Loại</option>
+            <option value="All">Tất Cả Các Loại</option>
             <option key={"vocab"} value={"vocab"}>
               Vocabulary
             </option>
@@ -122,16 +202,25 @@ const SubmissionHistory = () => {
               Reading
             </option>
           </Form.Select>{" "}
+          <Form.Control
+            placeholder="Tìm kiếm học sinh..."
+            onKeyDown={(e) => handleSearch(e.key)}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            className="background-primary"
+            style={{ width: "20%" }}
+            type="text"
+          ></Form.Control>
         </div>
         <Card.Body>
           <Table striped bordered hover responsive>
             <thead>
               <tr>
                 <th>#STT</th>
+                <th>Name</th>
                 <th>Loại Bài Tập</th>
                 <th>Thời Gian Nộp</th>
                 <th>Kết Quả (Số Lỗi)</th>
-                <th>Chi Tiết</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -140,15 +229,25 @@ const SubmissionHistory = () => {
                 return (
                   <tr key={item.id}>
                     <td>{index + 1}</td>
+                    <th>{item.studentName}</th>
                     <td>
                       <Badge bg={typeInfo.variant}>{typeInfo.label}</Badge>
                     </td>
                     <td>{formatDateTime(item.submittedAt)}</td>
                     <td>{renderNumberWrong(item.type, item.numberWrong)}</td>
                     <td>
-                      <Button variant="outline-info" size="sm">
-                        Xem
-                      </Button>
+                      <span
+                        className={
+                          item.status === "Done"
+                            ? "text-success"
+                            : item.status === "Late"
+                            ? "text-warning"
+                            : "text-danger"
+                        }
+                        size="sm"
+                      >
+                        {item.status}
+                      </span>
                     </td>
                   </tr>
                 );

@@ -11,9 +11,9 @@ const initialRowDefault = {
   homeworkDeadline: "",
   homeworkAttachmentUrl: "",
 };
-const AddLessonModal = ({ show, handleClose }) => {
+const AddLessonModal = ({ show, handleClose, onSave }) => {
   const { id } = useParams();
-  const [form, setForm] = useState({ ...initialRowDefault });
+  const [form, setForm] = useState({ ...initialRowDefault, classRoomId: id });
   const handleChange = (name, value) => {
     setForm({ ...form, [name]: value });
   };
@@ -26,10 +26,10 @@ const AddLessonModal = ({ show, handleClose }) => {
       toast.error("Vui lòng điền đầy đủ thông tin các trường");
       return;
     }
-    setForm({ ...form, classRoomId: id });
     await teacherService.createLesson(form);
     setForm({ ...initialRowDefault });
     toast.success("Lưu thành công");
+    onSave();
     handleClose();
   };
   return (
@@ -105,7 +105,7 @@ const AddLessonModal = ({ show, handleClose }) => {
 
             <Form.Group className="mb-3" controlId="Attachement Url">
               <Form.Label>
-                <strong>File đính kèm</strong>
+                <strong>Link đính kèm</strong>
               </Form.Label>
               <Form.Control
                 value={form.homeworkAttachmentUrl}

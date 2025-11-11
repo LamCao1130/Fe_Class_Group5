@@ -13,7 +13,14 @@ import { toast, ToastContainer } from "react-toastify";
 import teacherService from "../services/TeacherSerivceApi";
 import { Plus, Trash3 } from "react-bootstrap-icons";
 
-const EditQuestionModal = ({ show, item, setShowEdit, onSave, speak }) => {
+const EditQuestionModal = ({
+  show,
+  item,
+  setShowEdit,
+  onSave,
+  speak,
+  isExam,
+}) => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState(null);
@@ -33,6 +40,7 @@ const EditQuestionModal = ({ show, item, setShowEdit, onSave, speak }) => {
           questionTypeId: response.questionTypeDto.questionTypeId,
           name: response.questionTypeDto.name || "",
           type: response.questionTypeDto.type || "",
+          examId: response.questionTypeDto.examId,
           lessonId: response.questionTypeDto.lessonId,
           questions: response.questionTypeDto.questions || [],
           readingTitle: response.readingDto?.title || "",
@@ -122,7 +130,7 @@ const EditQuestionModal = ({ show, item, setShowEdit, onSave, speak }) => {
           ? q
           : {
               ...q,
-              options: [...q.options, { optionText: "", correctAnswer: "0" }],
+              options: [...q.options, { optionText: "", correctAnswer: false }],
             }
       ),
     }));
@@ -220,6 +228,7 @@ const EditQuestionModal = ({ show, item, setShowEdit, onSave, speak }) => {
           name: form.name,
           type: form.type,
           lessonId: form.lessonId,
+          examId: form.examId,
           questions: form.questions.map((q) => ({
             id: q.id,
             questionText: q.questionText,

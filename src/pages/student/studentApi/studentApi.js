@@ -76,7 +76,7 @@ let studentApi = {
   },
   getListSubmitionHistoryByLesson: async (id) => {
     let res = await axiosApi.get(
-      `http://localhost:8080/api/v1/Question/history/${id}`
+      `http://localhost:8080/api/v1/Question/${id}/submissionHistory`
     );
     return res.data;
   },
