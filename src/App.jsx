@@ -55,7 +55,9 @@ function App() {
         handleShow2FA();
       }
     } catch (e) {
-      toast.error("Sai tài khoản hoặc mật khẩu");
+      const errorMessage = e.response?.data || "Sai tài khoản hoặc mật khẩu";
+
+      toast.error(errorMessage);
     }
     // setShowLogin(false);
   };

@@ -34,6 +34,8 @@ import Listening from "../pages/student/components/Listening";
 import Writting from "../pages/student/components/Writting";
 import SubmissionHistory from "../pages/teacher/pages/SubmitionHistory";
 import QuestionDetail from "../pages/teacher/components/QuestionDetail";
+import ClassRooms from "../pages/admin/pages/ClassRooms";
+import ClassRoomDetail from "../pages/admin/pages/ClassRoomDetail";
 import ResetPassword from "../components/ResetPassword";
 let router = createBrowserRouter([
   {path:"/resetPassword",element:<ResetPassword />},
@@ -171,6 +173,8 @@ let router = createBrowserRouter([
       { path: "teachers/:id", element: <TeacherDetail /> },
       { path: "student", element: <Students /> },
       { path: "student/:id", element: <StudentDetail /> },
+      { path: "classrooms", element: <ClassRooms /> },
+      { path: "classrooms/:id", element: <ClassRoomDetail/>},
     ],
   },
 ]);

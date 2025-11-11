@@ -105,25 +105,26 @@ const Teachers = () => {
       );
       toast.success("Delete teacher successfull");
     } catch (error) {
+      const errorMessage = "Can not delete teacher account";
       console.error(error);
-      toast.error("Can not delete teacher account");
+      toast.error(error.response.data?.message || errorMessage);
     }
   }
 
 
-  const handleRestore = async(teacherId) => {
-    if(!window.confirm("Are you sure you want to restore this teacher account?")){
+  const handleRestore = async (teacherId) => {
+    if (!window.confirm("Are you sure you want to restore this teacher account?")) {
       return;
     }
-    try{
+    try {
       const res = await adminApi.restoreTeacherAccount(teacherId);
-      setTeachers(prevTeachers => 
-        prevTeachers.map(t => 
-          t.id === teacherId ? {...t, ...res} : t
+      setTeachers(prevTeachers =>
+        prevTeachers.map(t =>
+          t.id === teacherId ? { ...t, ...res } : t
         )
       );
       toast.success("Restore teacher successfull");
-    }catch(error){
+    } catch (error) {
       console.log(error);
       toast.error("Can not restore teacher account");
     }
@@ -133,7 +134,14 @@ const Teachers = () => {
     setLgShow(true);
     setIsEdit(false);
     setSelectedTeacherId(null);
-    reset();
+    reset({
+      roleId: 2,
+      fullName: '',
+      email: '',
+      phoneNumber: '',
+      address: '',
+      dateOfBirth: '',
+    });
   }
 
   const onSubmit = async (data) => {
@@ -239,8 +247,8 @@ const Teachers = () => {
                   <tbody>
                     {filteredTeachers.map((teacher) => (
                       <tr key={teacher.id}
-                      onClick={() => handleView(teacher.id)}
-                      style={{cursor: "pointer"}}
+                        onClick={() => handleView(teacher.id)}
+                        style={{ cursor: "pointer" }}
                       >
                         <td>{teacher.id}</td>
                         <td>{teacher.fullName}</td>
@@ -260,8 +268,12 @@ const Teachers = () => {
                             <Button
                               variant="outline-warning"
                               size="sm"
-                              onClick={() => handleEdit(teacher.id)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEdit(teacher.id);
+                              }}
                               title="Edit"
+                              disabled={teacher.status !== 1}
                             >
                               <Edit size={14} />
                             </Button>
@@ -271,7 +283,10 @@ const Teachers = () => {
                               (<Button
                                 variant="outline-danger"
                                 size="sm"
-                                onClick={() => handleDelete(teacher.id)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDelete(teacher.id);
+                                }}
                                 title="Delete"
                               >
                                 <Trash2 size={14} />
@@ -280,12 +295,28 @@ const Teachers = () => {
                               <Button
                                 variant="outline-primary"
                                 size="sm"
-                                onClick={() => handleRestore(teacher.id)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleRestore(teacher.id);
+                                }}
                                 title="Restore"
                               >
                                 <RefreshCcw size={14} />
                               </Button>
                             }
+                            {/* restore secret_code */}
+                            <Button
+                              variant="outline-info"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRestoreSecretCode(teacher.id);
+                              }}
+                              title="Restore Secret Code"
+                              disabled={teacher.status !== 1}
+                            >
+                              <Eye size={14} />
+                            </Button>
 
                           </div>
                         </td>
@@ -303,12 +334,19 @@ const Teachers = () => {
           <Col>
             <Pagination className="justify-content-center">
               <Pagination.Prev
-                onClick={() => setPage(page - 1)}
+                onClick={() => {
+                  setPage(page - 1);
+                  setCurrentPage(page);
+                }
+                }
                 disabled={page === 0}
               />
               {renderPagination()}
               <Pagination.Next
-                onClick={() => setPage(page + 1)}
+                onClick={() => {
+                  setPage(page + 1);
+                  setCurrentPage(page + 2);
+                }}
                 disabled={page + 1 === totalPages}
               />
             </Pagination>
